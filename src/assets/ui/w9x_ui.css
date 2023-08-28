@@ -1,0 +1,72 @@
+/* Components for Windows 9x UI - use by adding w9x class to parent element */
+
+/* Windows 9x MS Sans Serif font */
+@font-face {
+    font-family: W9xMSSansSerif;
+    src: url(fonts/MSSansSerif8px.woff2) format('woff2'),
+         url(fonts/MSSansSerif8px.woff) format('woff'),
+         url(fonts/MSSansSerif8px.ttf) format('truetype'),
+         url(fonts/MSSansSerif8px.svg) format('svg');
+}
+
+@font-face {
+    font-family: W9xMSSansSerif;
+    src: url(fonts/MSSansSerif8pxBold.svg) format('woff2'),
+         url(fonts/MSSansSerif8pxBold.woff) format('woff'),
+         url(fonts/MSSansSerif8pxBold.ttf) format('truetype'),
+         url(fonts/MSSansSerif8pxBold.svg) format('svg');
+    font-weight: bold;
+}
+
+.w9x {
+    font-family: W9xMSSansSerif, 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
+    background-color: #c0c0c0;
+    padding: 0.3rem;
+    box-shadow: inset -0.1rem -0.1rem 0 #000000, inset 0.1rem 0.1rem 0 #c0c0c0, inset -0.2rem -0.2rem 0 #808080, inset 0.2rem 0.2rem 0 #ffffff;
+}
+
+.w9x .bold {
+    font-weight: bold;
+}
+
+.w9x .title_bar {
+    background-color: #000080;
+    padding: 0.25rem;
+    color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.w9x .title_bar h1 {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    width: fit-content;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.w9x .title_bar button {
+    background-color: #c0c0c0;
+    font-family: inherit;
+    border: none;
+    padding-top: 0.6rem; padding-bottom: 0.6rem;
+    box-shadow: inset -0.1rem -0.1rem 0 #000000, inset 0.1rem 0.1rem 0 #ffffff, inset -0.2rem -0.2rem 0 #808080, inset 0.2rem 0.2rem 0 #c0c0c0;
+}
+
+.w9x .title_bar button:active {
+    margin: 0;
+    box-shadow: inset 0 0 0 0.1rem #000000, inset 0 0 0 0.2rem #808080;
+}
+
+.w9x .title_bar button.mini {
+    padding-top: 0.1rem; padding-bottom: 0.1rem;
+}
+
+/* Correction for bold font */
+.w9x .title_bar h1,
+.w9x b,
+.w9x .bold {
+    line-height: 1;
+}
