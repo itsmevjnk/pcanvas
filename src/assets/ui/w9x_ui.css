@@ -124,6 +124,11 @@
     background-repeat: no-repeat;
 }
 
+.w9x input[type="range"]:disabled::-webkit-slider-thumb,
+.w9x input[type="range"][disabled]::-webkit-slider-thumb {
+    background-image: url('slider-active.svg');
+}
+
 /* MICROSOFT PAINT COLOUR SELECTOR BOX */
 
 .w9x .mspaint-colsel .color-board {
