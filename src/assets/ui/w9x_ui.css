@@ -31,7 +31,7 @@
 
 /* TITLE BAR */
 
-.w9x .title_bar {
+.w9x .title-bar {
     background-color: #000080;
     padding: 0.25rem;
     color: #ffffff;
@@ -41,7 +41,7 @@
     user-select: none;
 }
 
-.w9x .title_bar h1 {
+.w9x .title-bar h1 {
     font-size: 1rem;
     font-weight: bold;
     margin: 0;
@@ -51,11 +51,11 @@
 }
 
 /* MENU BAR */
-.w9x .menu_bar {
+.w9x .menu-bar {
     background-color: #c0c0c0;
 }
 
-.w9x .menu_bar ul {
+.w9x .menu-bar ul {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -64,14 +64,18 @@
     list-style-type: none;
 }
 
-.w9x .menu_bar li {
+.w9x .menu-bar li {
     padding: 0.25rem 0.5rem;
     cursor: default;
     user-select: none;
 }
 
-.w9x .menu_bar li:hover {
+.w9x .menu-bar li:hover {
     box-shadow: inset -0.1rem -0.1rem 0 #808080, inset 0.1rem 0.1rem 0 #ffffff;
+}
+
+.w9x .menu-bar li.active {
+    box-shadow: inset -0.1rem -0.1rem 0 #ffffff, inset 0.1rem 0.1rem 0 #808080;
 }
 
 /* BUTTON */
@@ -170,7 +174,7 @@
 }
 
 /* Correction for bold font */
-.w9x .title_bar h1,
+.w9x .title-bar h1,
 .w9x b,
 .w9x .bold {
     line-height: 1;
