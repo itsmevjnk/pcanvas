@@ -1,4 +1,5 @@
 @import url(ui/w9x_ui.css); /* UI */
+@import url(palette.css); /* 16-colour palette */
 
 body {
     margin: 0;
@@ -9,4 +10,12 @@ div#app {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 2 * 0.3rem); /* compensate for border */
+}
+
+header, nav, footer {
+    flex: 0;
+}
+
+main {
+    flex: 1;
 }

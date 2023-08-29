@@ -29,6 +29,8 @@
     font-weight: bold;
 }
 
+/* TITLE BAR */
+
 .w9x .title_bar {
     background-color: #000080;
     padding: 0.25rem;
@@ -36,6 +38,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    user-select: none;
 }
 
 .w9x .title_bar h1 {
@@ -47,7 +50,33 @@
     overflow: hidden;
 }
 
-.w9x .title_bar button {
+/* MENU BAR */
+.w9x .menu_bar {
+    background-color: #c0c0c0;
+}
+
+.w9x .menu_bar ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0.1rem 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.w9x .menu_bar li {
+    padding: 0.25rem 0.5rem;
+    cursor: default;
+    user-select: none;
+}
+
+.w9x .menu_bar li:hover {
+    box-shadow: inset -0.1rem -0.1rem 0 #808080, inset 0.1rem 0.1rem 0 #ffffff;
+}
+
+/* BUTTON */
+
+.w9x button {
     background-color: #c0c0c0;
     font-family: inherit;
     border: none;
@@ -55,13 +84,89 @@
     box-shadow: inset -0.1rem -0.1rem 0 #000000, inset 0.1rem 0.1rem 0 #ffffff, inset -0.2rem -0.2rem 0 #808080, inset 0.2rem 0.2rem 0 #c0c0c0;
 }
 
-.w9x .title_bar button:active {
+.w9x button:not(:disabled):active,
+.w9x button:not([disabled]):active {
     margin: 0;
     box-shadow: inset 0 0 0 0.1rem #000000, inset 0 0 0 0.2rem #808080;
 }
 
-.w9x .title_bar button.mini {
+.w9x button:disabled,
+.w9x button[disabled] {
+    color: #808080;
+    text-shadow: 0.1rem 0.1rem 0 #ffffff;
+}
+
+.w9x button.mini {
     padding-top: 0.1rem; padding-bottom: 0.1rem;
+}
+
+/* SLIDER */
+
+.w9x input[type="range"] {
+    appearance: none;
+    width: 100%;
+    height: 0.4rem;
+    background-color: #c0c0c0;
+    box-shadow: inset -0.1rem -0.1rem 0 #ffffff, inset 0.1rem 0.1rem 0 #808080, inset -0.2rem -0.2rem 0 #c0c0c0, inset 0.2rem 0.2rem 0 #000000;
+}
+
+.w9x input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.1rem;
+    height: 2.1rem;
+    border: 0;
+    background-image: url('slider.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* MICROSOFT PAINT COLOUR SELECTOR BOX */
+
+.w9x .mspaint-colsel .color-board {
+    display: flex;
+    flex-direction: column;
+}
+
+.w9x .mspaint-colsel,
+.w9x .mspaint-colsel .row {
+    display: flex;
+    flex-direction: row;
+}
+
+.w9x .mspaint-colsel .cell {
+    border-right: 0.1rem solid white;
+    border-bottom: 0.1rem solid white;
+    width: calc(1.5rem - 0.1rem);
+    height: calc(1.5rem - 0.1rem);
+    box-shadow: inset 0.1rem 0.1rem 0 #808080, inset -0.1rem -0.1rem 0 #c0c0c0, inset 0.2rem 0.2rem 0 #000000;
+}
+
+.w9x .mspaint-colsel .cell.large {
+    width: calc(3.0rem - 0.1rem);
+    height: calc(3.0rem - 0.1rem);
+}
+
+/* STATUS BAR */
+.w9x .status-container {
+    box-shadow: inset 0 0.1rem 0 #808080, inset 0 0.2rem 0 #ffffff;
+    padding-top: 0.4rem;
+    padding-bottom: 0.2rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.w9x .status-container:before {
+    position: relative;
+}
+
+.w9x .status-item {
+    box-shadow: inset -0.1rem -0.1rem 0 #ffffff, inset 0.1rem 0.1rem 0 #808080;
+    padding: 0.4rem 0.25rem;
+    flex: 1;
+}
+
+.w9x .status-item:not(:last-child) {
+    margin-right: 0.25rem;
 }
 
 /* Correction for bold font */
