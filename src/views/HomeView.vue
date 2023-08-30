@@ -9,7 +9,16 @@ import {store} from '../info.js'
     <CanvasMenuBar/>
     <main>
         <!-- <canvas id="canvas"></canvas> -->
-        There is (almost) nothing yet at this point. Here are some stuff for UI testing:
+        <div class="msg-container">
+            <img class="icon" src="../assets/ui/icons/info.png"/>
+            <div class="content">
+                There is (almost) nothing yet at this point, just a few controls here and there.<br>
+                In the meantime, here are some stuff for UI testing:
+            </div>
+        </div>
+        <div style="margin: 0 2rem;">
+            
+        </div>
     </main>
     <footer>
         <div class="actions">
@@ -128,6 +137,7 @@ footer {
 
 main {
     display: flex;
+    flex-direction: column;
 }
 
 canvas {

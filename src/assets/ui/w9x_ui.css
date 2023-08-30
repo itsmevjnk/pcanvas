@@ -229,6 +229,28 @@
     margin-right: 0.25rem;
 }
 
+/* MESSAGES */
+
+.w9x .msg-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 1rem 2rem;
+}
+
+.w9x .msg-container img.icon {
+    flex: 0;
+    min-width: 3.5rem;
+    margin-right: 1rem;
+
+    /* TLDR: responsive img */
+    height: auto;
+}
+
+.w9x .msg-container .content {
+    flex: 1;
+}
+
 /* Correction for bold font */
 .w9x .title-bar h1,
 .w9x b,
