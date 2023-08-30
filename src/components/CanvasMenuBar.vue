@@ -12,23 +12,23 @@ import { GlobalEvents } from 'vue-global-events';
             <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-help">Help</li>
         </ul>
         <ul id="menu-file" class="menu inactive">
-            <li>Log in/Register</li>
-            <li>Download canvas</li>
+            <li><a href="#">Log in/Register</a></li>
+            <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
-            <li>Zoom in</li>
-            <li class="disabled">Zoom out</li>
+            <li><a href="#">Zoom in</a></li>
+            <li class="disabled"><a href="#">Zoom out</a></li>
             <li class="separator"></li>
-            <li>Go to...</li>
+            <li><a href="#">Go to...</a></li>
             <li class="separator"></li>
-            <li>Past canvases</li>
+            <li><a href="#">Past canvases</a></li>
         </ul>
         <ul id="menu-help" class="menu inactive">
-            <li>How to play</li>
-            <li>What's new</li>
-            <li>About</li>
+            <li><a href="#">How to play</a></li>
+            <li><a href="#">What's new</a></li>
+            <li><a href="#">About</a></li>
             <li class="separator"></li>
-            <li>Contact admin</li>
+            <li><a href="#">Contact admin</a></li>
         </ul>
     </nav>
 </template>

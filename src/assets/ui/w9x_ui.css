@@ -91,19 +91,31 @@
 }
 
 .w9x .menu-bar ul.menu li {
+    user-select: none;
+    list-style-type: none;
+}
+
+.w9x .menu-bar ul.menu li a {
+    display: block;
     margin: 0;
     padding-top: 0.4rem; padding-bottom: 0.4rem;
     padding-left: 2.25rem; padding-right: 3.75rem;
     cursor: default;
-    user-select: none;
+    text-decoration: none;
+    color: #000000;
 }
 
-.w9x .menu-bar ul.menu li.disabled {
+.w9x .menu-bar ul.menu li a:visited {
+    color: #000000;
+}
+
+.w9x .menu-bar ul.menu li a.disabled,
+.w9x .menu-bar ul.menu li a.disabled:visited {
     color: #808080 !important;
 }
 
-.w9x .menu-bar ul.menu li:hover,
-.w9x .menu-bar ul.menu li.active {
+.w9x .menu-bar ul.menu li a:hover,
+.w9x .menu-bar ul.menu li a.active {
     background-color: #000080;
     color: #ffffff;
 }
