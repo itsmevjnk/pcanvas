@@ -35,7 +35,7 @@ import { GlobalEvents } from 'vue-global-events';
 
 <script>
 export default {
-    name: 'MenuBar',
+    name: 'CanvasMenuBar',
     data() {
         return {
             opened_menu: null,

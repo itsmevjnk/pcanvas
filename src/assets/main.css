@@ -19,3 +19,7 @@ header, nav, footer {
 main {
     flex: 1;
 }
+
+.hidden {
+    visibility: hidden;
+}

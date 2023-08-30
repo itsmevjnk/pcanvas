@@ -3,7 +3,12 @@ import {reactive} from 'vue';
 export const store = reactive({
     canvas: {
         width: 1024,
-        height: 1024
+        height: 1024,
+        selected_px: {
+            selected: true,
+            x: 0,
+            y: 0
+        }
     },
 
     color_board: {

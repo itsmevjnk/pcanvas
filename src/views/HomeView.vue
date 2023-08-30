@@ -1,8 +1,10 @@
 <script setup>
+import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import {store} from '../info.js'
 </script>
 
 <template>
+    <CanvasMenuBar/>
     <main>
         {{ canvas_scale }}
     </main>
@@ -24,15 +26,15 @@ import {store} from '../info.js'
                 <input type="range" min="1" max="10" step="0.1" v-model="canvas_scale"/>
                 <span>Large</span>
             </div>
-            <div id="place-buttons">
+            <div id="place-buttons" :class="{ hidden: !store.canvas.selected_px.selected }">
                 <button>Place</button>
                 <button>Cancel</button>
             </div>
         </div>
         <div class="status-container">
-            <div class="status-item flex-60">Test 1</div>
-            <div class="status-item flex-15">Test 2</div>
-            <div class="status-item flex-25">Test 3</div>
+            <div class="status-item flex-60">Cooldown status goes here</div>
+            <div class="status-item flex-15">{{ (store.canvas.selected_px.selected) ? (store.canvas.selected_px.x + ',' + store.canvas.selected_px.y) : '' }}</div>
+            <div class="status-item flex-25">Not logged in</div>
         </div>
     </footer>
 </template>
