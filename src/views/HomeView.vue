@@ -92,7 +92,7 @@ footer {
 }
 
 /* Buttons (place/cancel) area */
-.buttons-group {
+.button-group {
     margin-left: 0;
     margin-right: 0;
 }
