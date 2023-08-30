@@ -18,25 +18,25 @@ import {store} from '../info.js'
         </div>
         <div style="margin: 0 2rem;">
             <div>
-                Canvas scale: {{ canvas_scale }}
+                Canvas scale: {{ store.drawing.scale }}
             </div>
 
             <div>
-                Selected colour: {{ draw_color }} (<span v-bind:class="'text-' + draw_color">colour test</span>)
+                Selected colour: {{ store.drawing.color }} (<span v-bind:class="'text-' + store.drawing.color">colour test</span>)
             </div>
             
             <div>
-                <input type="checkbox" v-model="store.canvas.selected_px.selected"> Pixel selected
+                <input type="checkbox" v-model="store.drawing.pixel.selected"> Pixel selected
             </div>
 
-            <div v-show="store.canvas.selected_px.selected">
+            <div v-show="store.drawing.pixel.selected">
                 Selected pixel coordinates: 
-                X = <input type="number" min="0" v-bind:max="store.canvas.width - 1" v-model="store.canvas.selected_px.x">
-                Y = <input type="number" min="0" v-bind:max="store.canvas.height - 1" v-model="store.canvas.selected_px.y">
+                X = <input type="number" min="0" v-bind:max="store.canvas.width - 1" v-model="store.drawing.pixel.x">
+                Y = <input type="number" min="0" v-bind:max="store.canvas.height - 1" v-model="store.drawing.pixel.y">
             </div>
 
-            <div v-show="store.canvas.selected_px.selected">
-                <input type="checkbox" v-model="draw_cooldown"> Drawing cooldown triggered
+            <div v-show="store.drawing.pixel.selected">
+                <input type="checkbox" v-model="store.drawing.cooldown"> Drawing cooldown triggered
             </div>
 
             <div>
@@ -47,7 +47,7 @@ import {store} from '../info.js'
     <footer>
         <div class="actions">
             <div class="mspaint-colsel">
-                <div v-bind:class="'cell large bg-' + draw_color"></div>
+                <div v-bind:class="'cell large bg-' + store.drawing.color"></div>
                 <div class="color-board">
                     <div class="row">
                         <div @click="select_color" v-for="color in store.color_board.top" v-bind:class="'cell bg-' + color" v-bind:data-color="color"></div>
@@ -59,21 +59,21 @@ import {store} from '../info.js'
             </div>
             <div id="zoom-slider">
                 <span>Small</span>
-                <input type="range" min="1" max="10" step="0.1" v-model="canvas_scale"/>
+                <input type="range" min="1" max="10" step="0.1" v-model="store.drawing.scale"/>
                 <span>Large</span>
             </div>
-            <div id="place-buttons" class="button-group" :class="{ hidden: !store.canvas.selected_px.selected }">
-                <button :disabled="draw_cooldown">Place</button>
+            <div id="place-buttons" class="button-group" :class="{ hidden: !store.drawing.pixel.selected }">
+                <button :disabled="store.drawing.cooldown">Place</button>
                 <button>Cancel</button>
             </div>
         </div>
         <div class="status-container">
             <div class="status-item flex-60">
-                <template v-if="!store.canvas.selected_px.selected">Select a pixel to draw on...</template>
-                <template v-else-if="draw_cooldown">You cannot place a pixel right now.</template>
+                <template v-if="!store.drawing.pixel.selected">Select a pixel to draw on...</template>
+                <template v-else-if="store.drawing.cooldown">You cannot place a pixel right now.</template>
                 <template v-else>Select the colour, then click Place to draw.</template>
             </div>
-            <div class="status-item flex-15">{{ (store.canvas.selected_px.selected) ? (store.canvas.selected_px.x + ',' + store.canvas.selected_px.y) : '&nbsp;' }}</div>
+            <div class="status-item flex-15">{{ (store.drawing.pixel.selected) ? (store.drawing.pixel.x + ',' + store.drawing.pixel.y) : '&nbsp;' }}</div>
             <div class="status-item flex-25">
                 <template v-if="store.user.name !== ''">Logged in as <b>{{ store.user.name }}</b></template>
                 <template v-else>Not logged in</template>
@@ -87,10 +87,7 @@ export default {
     name: 'HomeView',
     data() {
         return {
-            canvas: Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15)),
-            draw_color: 0,
-            draw_cooldown: false,
-            canvas_scale: 1
+            canvas: Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15))
         };
     },
 
@@ -100,7 +97,7 @@ export default {
 
     methods: {
         select_color(event) {
-            this.draw_color = parseInt(event.target.dataset.color);
+            store.drawing.color = parseInt(event.target.dataset.color);
         },
 
         canvas_handler() {

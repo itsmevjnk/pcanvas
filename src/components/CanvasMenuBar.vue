@@ -17,8 +17,8 @@ import {RouterLink} from 'vue-router';
             <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
-            <li><a href="#">Zoom in</a></li>
-            <li class="disabled"><a href="#">Zoom out</a></li>
+            <li><a :class="{ disabled: store.drawing.scale == 10 }" @click="if(store.drawing.scale != 10) store.drawing.scale++;">Zoom in</a></li>
+            <li><a :class="{ disabled: store.drawing.scale == 1 }" @click="if(store.drawing.scale != 1) store.drawing.scale--;">Zoom out</a></li>
             <li class="separator"></li>
             <li><a href="#">Go to...</a></li>
             <li class="separator"></li>
