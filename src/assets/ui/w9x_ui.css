@@ -123,12 +123,25 @@
     border: none;
     padding-top: 0.6rem; padding-bottom: 0.6rem;
     box-shadow: inset -0.1rem -0.1rem 0 #000000, inset 0.1rem 0.1rem 0 #ffffff, inset -0.2rem -0.2rem 0 #808080, inset 0.2rem 0.2rem 0 #c0c0c0;
+    width: 6rem;
 }
 
 .w9x button:not(:disabled):active,
 .w9x button:not([disabled]):active {
     margin: 0;
     box-shadow: inset 0 0 0 0.1rem #000000, inset 0 0 0 0.2rem #808080;
+}
+
+/* BUTTON GROUP */
+.w9x .button-group {
+    display: flex;
+    flex-direction: row;
+    margin: auto 0;
+    padding: 0 1rem;
+}
+
+.w9x .button-group button:not(:last-child) {
+    margin-right: 2rem;
 }
 
 .w9x button:disabled,
@@ -139,6 +152,7 @@
 
 .w9x button.mini {
     padding-top: 0.1rem; padding-bottom: 0.1rem;
+    width: initial;
 }
 
 /* SLIDER */

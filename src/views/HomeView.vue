@@ -8,7 +8,8 @@ import {store} from '../info.js'
     <TitleBar title="pCanvas"/>
     <CanvasMenuBar/>
     <main>
-        <canvas id="canvas"></canvas>
+        <!-- <canvas id="canvas"></canvas> -->
+        There is (almost) nothing yet at this point. Here are some stuff for UI testing:
     </main>
     <footer>
         <div class="actions">
@@ -28,7 +29,7 @@ import {store} from '../info.js'
                 <input type="range" min="1" max="10" step="0.1" v-model="canvas_scale"/>
                 <span>Large</span>
             </div>
-            <div id="place-buttons" :class="{ hidden: !store.canvas.selected_px.selected }">
+            <div id="place-buttons" class="button-group" :class="{ hidden: !store.canvas.selected_px.selected }">
                 <button>Place</button>
                 <button>Cancel</button>
             </div>
@@ -53,7 +54,7 @@ export default {
     },
 
     mounted() {
-        this.canvas_handler();
+        // this.canvas_handler();
     },
 
     methods: {
@@ -77,6 +78,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 footer {   
     padding: 0 0.25rem;
 }
@@ -89,19 +92,9 @@ footer {
 }
 
 /* Buttons (place/cancel) area */
-#place-buttons {
-    display: flex;
-    flex-direction: row;
-    margin: auto 0;
-    padding: 0 1rem;
-}
-
-#place-buttons button {
-    width: 6rem;
-}
-
-#place-buttons button:not(:last-child) {
-    margin-right: 2rem;
+.buttons-group {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 /* Zoom slider */
