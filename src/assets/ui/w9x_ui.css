@@ -252,8 +252,13 @@
 }
 
 /* Correction for bold font */
-.w9x .title-bar h1,
 .w9x b,
 .w9x .bold {
+    line-height: 0.6;
+}
+
+.w9x .title-bar h1,
+.w9x button.mini b,
+.w9x button.mini .bold {
     line-height: 1;
 }
