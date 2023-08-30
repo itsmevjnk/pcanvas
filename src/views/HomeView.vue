@@ -1,9 +1,11 @@
 <script setup>
+import TitleBar from '../components/TitleBar.vue'
 import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import {store} from '../info.js'
 </script>
 
 <template>
+    <TitleBar title="pCanvas"/>
     <CanvasMenuBar/>
     <main>
         <canvas id="canvas"></canvas>
