@@ -63,8 +63,8 @@ import {store} from '../info.js'
                 <span>Large</span>
             </div>
             <div id="place-buttons" class="button-group" :class="{ hidden: !store.drawing.pixel.selected }">
-                <button :disabled="store.drawing.cooldown">Place</button>
-                <button>Cancel</button>
+                <button :disabled="store.drawing.cooldown" @click="place_pixel">Place</button>
+                <button @click="store.drawing.pixel.selected = false">Cancel</button>
             </div>
         </div>
         <div class="status-container">
@@ -98,6 +98,12 @@ export default {
     methods: {
         select_color(event) {
             store.drawing.color = parseInt(event.target.dataset.color);
+        },
+
+        place_pixel() {
+            // TODO: backend stuff
+            store.drawing.cooldown = true;
+            store.drawing.pixel.selected = false;
         },
 
         canvas_handler() {
