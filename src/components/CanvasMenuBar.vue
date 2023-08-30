@@ -17,8 +17,8 @@ import {RouterLink} from 'vue-router';
             <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
-            <li><a :class="{ disabled: store.drawing.scale == 10 }" @click="if(store.drawing.scale != 10) store.drawing.scale++;">Zoom in</a></li>
-            <li><a :class="{ disabled: store.drawing.scale == 1 }" @click="if(store.drawing.scale != 1) store.drawing.scale--;">Zoom out</a></li>
+            <li><a :class="{ disabled: store.drawing.scale == 10 }" @click="zoom_in">Zoom in</a></li>
+            <li><a :class="{ disabled: store.drawing.scale == 1 }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
             <li><a href="#">Go to...</a></li>
             <li class="separator"></li>
@@ -64,6 +64,11 @@ export default {
     },
 
     methods: {
+        close_menu() {
+            this.opened_menu = null;
+            this.update_menu();
+        },
+        
         toggle_menu(event) {
             if(this.opened_menu === null) this.opened_menu = event.target;
             else this.opened_menu = null;
@@ -74,6 +79,20 @@ export default {
             if(this.opened_menu !== null && this.opened_menu !== event.target) {
                 this.opened_menu = event.target;
                 this.update_menu();
+            }
+        },
+
+        zoom_in() {
+            if(store.drawing.scale != 10) {
+                store.drawing.scale++;
+                this.close_menu();
+            }
+        },
+
+        zoom_out() {
+            if(store.drawing.scale != 1) {
+                store.drawing.scale--;
+                this.close_menu();
             }
         },
         
