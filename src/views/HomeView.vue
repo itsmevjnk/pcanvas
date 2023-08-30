@@ -10,7 +10,7 @@ import {store} from '../info.js'
     <main>
         <!-- <canvas id="canvas"></canvas> -->
         <div class="msg-container">
-            <img class="icon" src="../assets/ui/icons/info.png"/>
+            <img class="icon" src="../assets/ui/icons/warning.png"/>
             <div class="content">
                 There is (almost) nothing yet at this point, just a few controls here and there.<br>
                 In the meantime, here are some stuff for UI testing:
