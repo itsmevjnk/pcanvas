@@ -25,11 +25,11 @@ import {RouterLink} from 'vue-router';
             <li><a href="#">Past canvases</a></li>
         </ul>
         <ul id="menu-help" class="menu inactive">
-            <li><a href="#">How to play</a></li>
+            <li><RouterLink to="howto">How to play</RouterLink></li>
             <li><a href="#">What's new</a></li>
             <li><RouterLink to="about">About</RouterLink></li>
             <li class="separator"></li>
-            <li><a href="mailto:s223145883@deakin.edu.au">Contact admin</a></li>
+            <li><a v-bind:href="'mailto:' + store.admin_email">Contact admin</a></li>
         </ul>
     </nav>
 </template>
