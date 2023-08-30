@@ -14,5 +14,10 @@ export const store = reactive({
     color_board: {
         top: [0, 8, 1, 3, 2, 6, 4, 5],
         bottom: [15, 7, 9, 11, 10, 14, 12, 13]
+    },
+
+    user: {
+        name: '',
+        id: 0
     }
 });

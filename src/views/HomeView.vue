@@ -17,7 +17,31 @@ import {store} from '../info.js'
             </div>
         </div>
         <div style="margin: 0 2rem;">
+            <div>
+                Canvas scale: {{ canvas_scale }}
+            </div>
+
+            <div>
+                Selected colour: {{ draw_color }} (<span v-bind:class="'text-' + draw_color">colour test</span>)
+            </div>
             
+            <div>
+                <input type="checkbox" v-model="store.canvas.selected_px.selected"> Pixel selected
+            </div>
+
+            <div v-show="store.canvas.selected_px.selected">
+                Selected pixel coordinates: 
+                X = <input type="number" min="0" v-bind:max="store.canvas.width - 1" v-model="store.canvas.selected_px.x">
+                Y = <input type="number" min="0" v-bind:max="store.canvas.height - 1" v-model="store.canvas.selected_px.y">
+            </div>
+
+            <div v-show="store.canvas.selected_px.selected">
+                <input type="checkbox" v-model="draw_cooldown"> Drawing cooldown triggered
+            </div>
+
+            <div>
+                Logged in user name: <input type="text" v-model="store.user.name">
+            </div>
         </div>
     </main>
     <footer>
@@ -39,14 +63,21 @@ import {store} from '../info.js'
                 <span>Large</span>
             </div>
             <div id="place-buttons" class="button-group" :class="{ hidden: !store.canvas.selected_px.selected }">
-                <button>Place</button>
+                <button :disabled="draw_cooldown">Place</button>
                 <button>Cancel</button>
             </div>
         </div>
         <div class="status-container">
-            <div class="status-item flex-60">Cooldown status goes here</div>
-            <div class="status-item flex-15">{{ (store.canvas.selected_px.selected) ? (store.canvas.selected_px.x + ',' + store.canvas.selected_px.y) : '' }}</div>
-            <div class="status-item flex-25">Not logged in</div>
+            <div class="status-item flex-60">
+                <template v-if="!store.canvas.selected_px.selected">Select a pixel to draw on...</template>
+                <template v-else-if="draw_cooldown">You cannot place a pixel right now.</template>
+                <template v-else>Select the colour, then click Place to draw.</template>
+            </div>
+            <div class="status-item flex-15">{{ (store.canvas.selected_px.selected) ? (store.canvas.selected_px.x + ',' + store.canvas.selected_px.y) : '&nbsp;' }}</div>
+            <div class="status-item flex-25">
+                <template v-if="store.user.name !== ''">Logged in as <b>{{ store.user.name }}</b></template>
+                <template v-else>Not logged in</template>
+            </div>
         </div>
     </footer>
 </template>
@@ -58,6 +89,7 @@ export default {
         return {
             canvas: Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15)),
             draw_color: 0,
+            draw_cooldown: false,
             canvas_scale: 1
         };
     },
@@ -87,8 +119,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 footer {   
     padding: 0 0.25rem;
 }
