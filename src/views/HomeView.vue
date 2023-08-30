@@ -6,7 +6,7 @@ import {store} from '../info.js'
 <template>
     <CanvasMenuBar/>
     <main>
-        {{ canvas_scale }}
+        <canvas id="canvas"></canvas>
     </main>
     <footer>
         <div class="actions">
@@ -49,16 +49,32 @@ export default {
             canvas_scale: 1
         };
     },
+
+    mounted() {
+        this.canvas_handler();
+    },
+
     methods: {
         select_color(event) {
             this.draw_color = parseInt(event.target.dataset.color);
+        },
+
+        canvas_handler() {
+            /* draw something on the canvas */
+            var canvas = document.getElementById('canvas');
+            canvas.width = Math.floor(canvas.clientWidth);
+            canvas.height = Math.floor(canvas.clientHeight) - 4;
+            var ctx = canvas.getContext('2d');
+            ctx.font = '10px Courier';
+            ctx.fillText('Hello, World!', 100, 100);
+
+            requestAnimationFrame(this.canvas_handler); // this keeps itself running
         }
     }
 };
 </script>
 
 <style scoped>
-
 footer {   
     padding: 0 0.25rem;
 }
@@ -113,6 +129,15 @@ footer {
 
 .flex-25 {
     flex: 0.25;
+}
+
+main {
+    display: flex;
+}
+
+canvas {
+    flex: 1;
+    background-color: #ffffff;
 }
 
 /* Actions div in mobile view */
