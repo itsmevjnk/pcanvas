@@ -23,3 +23,11 @@ main {
 .hidden {
     visibility: hidden;
 }
+
+p {
+    margin: 0;
+}
+
+p:not(:last-child) {
+    margin-bottom: 1rem;
+}
