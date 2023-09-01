@@ -23,6 +23,13 @@ import {RouterLink} from 'vue-router';
             <li><a href="#">Go to...</a></li>
             <li class="separator"></li>
             <li><a href="#">Past canvases</a></li>
+            <li class="separator"></li>
+            <li>
+                <a @click="toggle_ui_test">
+                    <template v-if="!store.ui_test">Enter UI testing mode</template>
+                    <template v-else>Enter drawing mode</template>
+                </a>
+            </li>
         </ul>
         <ul id="menu-help" class="menu inactive">
             <li><RouterLink to="howto">How to play</RouterLink></li>
@@ -94,6 +101,11 @@ export default {
                 store.drawing.scale--;
                 this.close_menu();
             }
+        },
+
+        toggle_ui_test() {
+            store.ui_test = !store.ui_test;
+            this.close_menu();
         },
         
         /* functions for handling menu bar */
