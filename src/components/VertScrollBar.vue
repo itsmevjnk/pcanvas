@@ -10,7 +10,7 @@ const props = defineProps({
     },
     scale: {
         type: String,
-        default: '0.5rem'
+        default: '10rem'
     },
     init_step: { // divided by max
         type: [Number, String],
@@ -40,8 +40,8 @@ const emits = defineEmits(['update:modelValue']);
         </button>
         <div class="bar-container bg-checker">
             <div class="scroll-bar" ref="scroll_bar" :style="{
-                height: 'calc(100% - ' + max + '*' + props.scale + ')',
-                top: 'calc(' + props.modelValue + '*' + props.scale + ')',
+                height: 'calc(100% - ' + props.max + '*' + props.scale + ')',
+                top: (max_num !== 0) ? ('calc(' + props.modelValue + '*' + props.scale + ')') : '0px',
                 'min-height': props.scale // sneaky one so we can get the scale in pixels
             }"
             @mousedown.left="mouse_down = true" @mouseup="mouse_down = false" @mouseleave="mouse_down = false"
@@ -73,12 +73,15 @@ export default {
         },
 
         handle_mouse_enter(event) {
+            if(this.max_num === 0) return;
             if(!this.mouse_down) { // TODO: may be redundant
                 if(event.buttons & 1) this.mouse_down = true;
             }
+            console.log(this.max);
         },
 
         handle_mouse_move(event) {
+            if(this.max_num === 0) return;
             if(this.mouse_down) {
                 /* only change value if the scroll bar is clicked */
                 let new_value = this.modelValue + event.movementY / this.scale_px;
@@ -89,6 +92,7 @@ export default {
         },
 
         handle_dec() {
+            if(this.max_num === 0) return;
             if(this.modelValue > 0 && this.dec_timeout === null) {
                 let new_value = this.modelValue - this.istep_num;
                 if(new_value < 0) new_value = 0;
@@ -116,6 +120,7 @@ export default {
         },
 
         handle_inc() {
+            if(this.max_num === 0) return;
             if(this.modelValue < this.max_num && this.inc_timeout === null) {
                 let new_value = this.modelValue + this.istep_num;
                 if(new_value > this.max_num) new_value = this.max_num;

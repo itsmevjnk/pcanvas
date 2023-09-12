@@ -25,9 +25,9 @@ import { watch } from 'vue'
                     left: canvas_left + 'px'
                 }"></canvas>
             </div>
-            <VertScrollBar v-model="store.drawing.scale" max="10"/>
+            <VertScrollBar v-model="store.drawing.camera.y" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
-        <HorizScrollBar v-model="store.drawing.scale" max="10"/>
+        <HorizScrollBar v-model="store.drawing.camera.x" :max="(cam_x_absmax == 0) ? 0 : 2"/>
     </main>
     <main v-show="store.ui_test">
         <div class="msg-container">
@@ -46,6 +46,12 @@ import { watch } from 'vue'
                 Selected colour: {{ store.drawing.color }} (<span v-bind:class="'text-' + store.drawing.color">colour test</span>)
             </div>
             
+            <div>
+                Camera centre point:
+                X = <input type="number" min="0" max="2" v-model="store.drawing.camera.x">
+                Y = <input type="number" min="0" max="2" v-model="store.drawing.camera.y">
+            </div>
+
             <div>
                 <input type="checkbox" v-model="store.drawing.pixel.selected"> Pixel selected
             </div>
@@ -186,8 +192,8 @@ export default {
 
                     for(let i = 0; i < this.canvas_update.length; i++) {
                         let x = this.canvas_update[i][0], y = this.canvas_update[i][1];
-                        console.log(x);
-                        console.log(y)
+                        // console.log(x);
+                        // console.log(y)
                         img_data_u32[x * store.canvas.width + x] = this.palette[this.canvas[y][x]]; // 0 - x, 1 - y
                     }
                     this.canvas_update = [];
@@ -203,16 +209,22 @@ export default {
     },
 
     computed: {
+        canvas_scale_xmul() {
+            return this.canvas_container_dimensions.width / store.canvas.width;
+        },
+
+        canvas_scale_ymul() {
+            return this.canvas_container_dimensions.height / store.canvas.height;
+        },
+
         canvas_scale_multiplier() {
-            let xmul = this.canvas_container_dimensions.width / store.canvas.width;
-            let ymul = this.canvas_container_dimensions.height / store.canvas.height;
-            return (xmul > ymul) ? xmul : ymul;
+            return (this.canvas_scale_xmul > this.canvas_scale_ymul) ? this.canvas_scale_xmul : this.canvas_scale_ymul;
         },
 
         canvas_scale_multiplier_min() {
             let xmul = this.canvas_container_dimensions.width / store.canvas.width;
             let ymul = this.canvas_container_dimensions.height / store.canvas.height;
-            return (xmul < ymul) ? xmul : ymul;
+            return (this.canvas_scale_xmul < ymul) ? xmul : ymul;
         },
 
         canvas_width() {
@@ -224,14 +236,22 @@ export default {
         },
 
         canvas_left() {
-            return ((this.canvas_container_dimensions.width - this.canvas_width) / 2);
+            return ((this.canvas_container_dimensions.width - this.canvas_width) / 2 - (store.drawing.camera.x - 1) * this.cam_x_absmax);
         },
 
         canvas_top() {
-            return ((this.canvas_container_dimensions.height - this.canvas_height) / 2);
+            return ((this.canvas_container_dimensions.height - this.canvas_height) / 2 - (store.drawing.camera.y - 1) * this.cam_y_absmax);
+        },
+
+        cam_x_absmax() {
+            let m = this.canvas_width - this.canvas_container_dimensions.width;
+            return (m < 0) ? 0 : m;
+        },
+
+        cam_y_absmax() {
+            let m = this.canvas_height - this.canvas_container_dimensions.height;
+            return (m < 0) ? 0 : m;
         }
-
-
     }
 };
 </script>

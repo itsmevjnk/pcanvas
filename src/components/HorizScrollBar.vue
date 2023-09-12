@@ -10,7 +10,7 @@ const props = defineProps({
     },
     scale: {
         type: String,
-        default: '0.5rem'
+        default: '10rem'
     },
     init_step: { // divided by max
         type: [Number, String],
@@ -40,9 +40,10 @@ const emits = defineEmits(['update:modelValue']);
         </button>
         <div class="bar-container bg-checker">
             <div class="scroll-bar" ref="scroll_bar" :style="{
-                width: 'calc(100% - ' + max + '*' + props.scale + ')',
-                left: 'calc(' + props.modelValue + '*' + props.scale + ')',
-                'min-width': props.scale // sneaky one so we can get the scale in pixels
+                width: 'calc(100% - ' + props.max + '*' + props.scale + ')',
+                left: (max_num !== 0) ? ('calc(' + props.modelValue + '*' + props.scale + ')') : '0px',
+                'min-width': props.scale, // sneaky one so we can get the scale in pixels
+                // 'max-height': props.max + 'px'
             }"
             @mousedown.left="mouse_down = true" @mouseup="mouse_down = false" @mouseleave="mouse_down = false"
             @mousemove="handle_mouse_move" @mouseenter="handle_mouse_enter"></div>
@@ -73,24 +74,28 @@ export default {
         },
 
         handle_mouse_enter(event) {
+            if(this.max_num === 0) return;
             if(!this.mouse_down) { // TODO: may be redundant
                 if(event.buttons & 1) this.mouse_down = true;
             }
         },
 
         handle_mouse_move(event) {
+            if(this.max_num === 0) return;
             if(this.mouse_down) {
                 /* only change value if the scroll bar is clicked */
-                let new_value = this.modelValue + event.movementX / this.scale_px;
+                let new_value = this.model_num + event.movementX / this.scale_px;
                 if(new_value < 0) new_value = 0;
                 else if(new_value > this.max_num) new_value = this.max_num;
-                this.emit_model(new_value);                
+                this.emit_model(new_value);
+                // console.log(new_value);                
             }
         },
 
         handle_dec() {
-            if(this.modelValue > 0 && this.dec_timeout === null) {
-                let new_value = this.modelValue - this.istep_num;
+            if(this.max_num === 0) return;
+            if(this.model_num > 0 && this.dec_timeout === null) {
+                let new_value = this.model_num - this.istep_num;
                 if(new_value < 0) new_value = 0;
                 this.emit_model(new_value);
 
@@ -99,8 +104,8 @@ export default {
         },
 
         handle_dec_rep() {
-            if(this.modelValue > 0) {
-                let new_value = this.modelValue - this.rstep_num;
+            if(this.model_num > 0) {
+                let new_value = this.model_num - this.rstep_num;
                 if(new_value < 0) new_value = 0;
                 this.emit_model(new_value);
 
@@ -116,8 +121,9 @@ export default {
         },
 
         handle_inc() {
-            if(this.modelValue < this.max_num && this.inc_timeout === null) {
-                let new_value = this.modelValue + this.istep_num;
+            if(this.max_num === 0) return;
+            if(this.model_num < this.max_num && this.inc_timeout === null) {
+                let new_value = this.model_num + this.istep_num;
                 if(new_value > this.max_num) new_value = this.max_num;
                 this.emit_model(new_value);
 
@@ -126,8 +132,8 @@ export default {
         },
 
         handle_inc_rep() {
-            if(this.modelValue < this.max_num) {
-                let new_value = this.modelValue + this.rstep_num;
+            if(this.model_num < this.max_num) {
+                let new_value = this.model_num + this.rstep_num;
                 if(new_value > this.max_num) new_value = this.max_num;
                 this.emit_model(new_value);
 
@@ -146,6 +152,10 @@ export default {
     computed: {
         scale_px() {
             return parseFloat(getComputedStyle(this.$refs.scroll_bar).minWidth);
+        },
+
+        model_num() {
+            return parseFloat(this.modelValue);
         },
 
         max_num() {
