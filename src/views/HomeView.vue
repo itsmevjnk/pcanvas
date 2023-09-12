@@ -118,7 +118,7 @@ export default {
         window.addEventListener('resize', this.handle_resize);
         this.handle_resize();
 
-        // this.handle_canvas();
+        this.handle_canvas();
     },
 
     unmounted() {
