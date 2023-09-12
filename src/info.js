@@ -14,7 +14,11 @@ export const store = reactive({
         },
         color: 0,
         cooldown: false,
-        scale: 1
+
+        /* canvas stuff */
+        min_scale: NaN, // to be updated in HomeView
+        scale: NaN,
+        scale_steps: 25
     },
 
     color_board: {
