@@ -2,19 +2,32 @@
 import TitleBar from '../components/TitleBar.vue'
 import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
+import HorizScrollBar from '../components/HorizScrollBar.vue'
+import VertScrollBar from '../components/VertScrollBar.vue'
 import {store} from '../info.js'
+import { watch } from 'vue'
 </script>
 
 <template>
     <TitleBar title="pCanvas"/>
     <CanvasMenuBar/>
-    <main id="canvas-container" v-show="!store.ui_test">
-        <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
-            width: canvas_width + 'px',
-            height: canvas_height + 'px',
-            top: canvas_top + 'px',
-            left: canvas_left + 'px'
-        }"></canvas>
+    <main id="main-canvas" v-show="!store.ui_test" :style="{
+        'max-height': main_height + 'px'
+    }">
+        <div style="display: flex; flex-direction: row;" :style="{
+            height: main_top_height + 'px'
+        }">
+            <div id="canvas-container">
+                <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
+                    width: canvas_width + 'px',
+                    height: canvas_height + 'px',
+                    top: canvas_top + 'px',
+                    left: canvas_left + 'px'
+                }"></canvas>
+            </div>
+            <VertScrollBar v-model="store.drawing.scale" max="10"/>
+        </div>
+        <HorizScrollBar v-model="store.drawing.scale" max="10"/>
     </main>
     <main v-show="store.ui_test">
         <div class="msg-container">
@@ -60,6 +73,8 @@ export default {
     name: 'HomeView',
     data() {
         return {
+            main_height: 0,
+            main_top_height: 0,
             canvas: Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15)),
             canvas_container_dimensions: {
                 width: NaN,
@@ -88,11 +103,16 @@ export default {
                             0xFFC0C0C0, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF,
                             0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF];
         
+        /* add watcher for UI test mode switch */
+        watch(store.ui_test, (new_val, old_val) => {
+            if(new_val) this.handle_resize();
+        });
+        
         /* listen to window resize event to capture changes in canvas container size */
         window.addEventListener('resize', this.handle_resize);
         this.handle_resize();
 
-        this.handle_canvas();
+        // this.handle_canvas();
     },
 
     unmounted() {
@@ -109,6 +129,22 @@ export default {
         },
 
         handle_resize() {
+            this.main_height =  parseFloat(getComputedStyle(document.getElementById('app')).height)
+                            -   document.getElementsByTagName('header')[0].offsetHeight
+                            -   document.getElementsByTagName('nav')[0].offsetHeight
+                            -   document.getElementsByTagName('footer')[0].offsetHeight;
+            this.main_top_height = this.main_height - document.getElementsByClassName('hscroll-container')[0].offsetHeight;
+            
+            setTimeout(this.handle_resize_timeout, 1); // give it some time to change
+            // console.log(store.drawing.min_scale);
+        },
+
+        handle_resize_timeout() {
+            let main_elem = document.getElementById('main-canvas');
+            while(parseFloat(getComputedStyle(main_elem).maxHeight) != this.main_height) {
+                // console.log(getComputedStyle(main_elem).maxHeight + ', expected ' + this.main_height);
+            }
+
             let e = document.getElementById('canvas-container');
             this.canvas_container_dimensions.width = e.offsetWidth;
             this.canvas_container_dimensions.height = e.offsetHeight;
@@ -116,7 +152,8 @@ export default {
             store.drawing.min_scale = this.canvas_scale_multiplier_min / this.canvas_scale_multiplier;
             if(!isNaN(store.drawing.scale)) store.drawing.scale = store.drawing.min_scale * scale_norm;
             else store.drawing.scale = store.drawing.min_scale;
-            // console.log(store.drawing.min_scale);
+
+            document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
         },
 
         handle_canvas() {
@@ -212,6 +249,12 @@ canvas {
 }
 
 #canvas-container {
+    flex: 1;
+    height: 100%;
     overflow: hidden;
+}
+
+.hscroll-container {
+    width: initial; /* we don't need the 100% from HorizScrollBar */
 }
 </style>
