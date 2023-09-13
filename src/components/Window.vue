@@ -38,6 +38,7 @@ export default {
 
     data() {
         return {
+            
             offset: {
                 x: 0,
                 y: 0
@@ -51,7 +52,7 @@ export default {
 
 <style scoped>
 .window {
-    width: 50vw;
-    height: 40vw;
+    width: fit-content;
+    height: fit-content;
 }
 </style>
