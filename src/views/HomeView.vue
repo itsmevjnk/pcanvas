@@ -4,6 +4,7 @@ import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
 import HorizScrollBar from '../components/HorizScrollBar.vue'
 import VertScrollBar from '../components/VertScrollBar.vue'
+import { disable_ctx_menu_all } from '../utils.js'
 import {store} from '../info.js'
 import { watch } from 'vue'
 </script>
@@ -23,7 +24,7 @@ import { watch } from 'vue'
                     height: canvas_height + 'px',
                     top: canvas_top + 'px',
                     left: canvas_left + 'px'
-                }"></canvas>
+                }" class="no-ctx-menu"></canvas>
             </div>
             <VertScrollBar v-model="store.drawing.camera.y" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
@@ -31,7 +32,7 @@ import { watch } from 'vue'
     </main>
     <main v-show="store.ui_test">
         <div class="msg-container">
-            <img class="icon" src="../assets/ui/icons/warning.png"/>
+            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/warning.png"/>
             <div class="content">
                 There is (almost) nothing yet at this point, just a few controls here and there.<br>
                 In the meantime, here are some stuff for UI testing:
@@ -114,6 +115,8 @@ export default {
             if(new_val) this.handle_resize();
         });
         
+        disable_ctx_menu_all(); // disable context menu for canvas
+
         /* listen to window resize event to capture changes in canvas container size */
         window.addEventListener('resize', this.handle_resize);
         this.handle_resize();

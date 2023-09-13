@@ -1,5 +1,6 @@
 <script setup>
 import Window from './Window.vue';
+import { disable_ctx_menu_all } from '../utils.js';
 
 const props = defineProps({
     z_index: {
@@ -16,7 +17,7 @@ const emits = defineEmits(['cancel'])
         <div class="outer">
             <div class="prompt">
                 <div class="row">
-                    <img src="../assets/ui/icons/network.png" class="icon pixel"/>
+                    <img src="../assets/ui/icons/network.png" class="icon pixel no-ctx-menu"/>
                     <div class="prompt-text">
                         Enter your user name and password to start drawing.
                     </div>
@@ -55,7 +56,9 @@ export default {
         };
     },
 
-
+    mounted() {
+        disable_ctx_menu_all();
+    }
 };
 </script>
 

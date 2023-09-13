@@ -1,13 +1,14 @@
 <script setup>
 import TitleBar from '../components/TitleBar.vue'
 import { RouterLink } from 'vue-router'
+import { disable_ctx_menu_all } from '../utils.js'
 </script>
 
 <template>
     <TitleBar title="About pCanvas"/>
     <main>
         <div class="msg-container">
-            <img class="icon" src="../assets/ui/icons/info.png">
+            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/info.png">
             <div class="content">
                 <p>
                     <b>Developed by:</b><br>
@@ -26,6 +27,14 @@ import { RouterLink } from 'vue-router'
         <RouterLink to="/" class="button">OK</RouterLink>
     </footer>
 </template>
+
+<script>
+export default {
+    mounted() {
+        disable_ctx_menu_all();
+    }
+}
+</script>
 
 <style scoped>
 footer, main {
