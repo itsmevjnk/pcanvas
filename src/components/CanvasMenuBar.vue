@@ -19,8 +19,8 @@ import LoginWindow from '../components/LoginWindow.vue';
             <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
-            <li><a :class="{ disabled: store.drawing.scale == 10 }" @click="zoom_in">Zoom in</a></li>
-            <li><a :class="{ disabled: store.drawing.scale == 1 }" @click="zoom_out">Zoom out</a></li>
+            <li><a :class="{ disabled: store.drawing.scale >= store.drawing.min_scale * store.drawing.scale_steps }" @click="zoom_in">Zoom in</a></li>
+            <li><a :class="{ disabled: store.drawing.scale <= store.drawing.min_scale }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
             <li><a href="#">Go to...</a></li>
             <li class="separator"></li>
@@ -96,15 +96,17 @@ export default {
         },
 
         zoom_in() {
-            if(store.drawing.scale != 10) {
-                store.drawing.scale++;
+            if(store.drawing.scale < store.drawing.min_scale * store.drawing.scale_steps) {
+                store.drawing.scale += store.drawing.min_scale;
+                if(store.drawing.scale > store.drawing.min_scale * store.drawing.scale_steps) store.drawing.scale = store.drawing.min_scale * store.drawing.scale_steps;
                 this.close_menu();
             }
         },
 
         zoom_out() {
-            if(store.drawing.scale != 1) {
-                store.drawing.scale--;
+            if(store.drawing.scale > store.drawing.min_scale) {
+                store.drawing.scale -= store.drawing.min_scale;
+                if(store.drawing.scale < store.drawing.min_scale) store.drawing.scale = store.drawing.min_scale;
                 this.close_menu();
             }
         },
