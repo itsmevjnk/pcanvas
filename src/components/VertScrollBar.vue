@@ -77,7 +77,7 @@ export default {
             if(!this.mouse_down) { // TODO: may be redundant
                 if(event.buttons & 1) this.mouse_down = true;
             }
-            console.log(this.max);
+            // console.log(this.max);
         },
 
         handle_mouse_move(event) {
