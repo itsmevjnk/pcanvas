@@ -128,7 +128,7 @@ export default {
         place_pixel() {
             // TODO: backend stuff
             this.canvas[store.drawing.pixel.y][store.drawing.pixel.x] = store.drawing.color; // add pixel to local canvas
-            store.drawing.cooldown = true;
+            // store.drawing.cooldown = true;
             store.drawing.pixel.selected = false;
             this.canvas_update.push([store.drawing.pixel.x, store.drawing.pixel.y]); // add to canvas updating queue
         },
@@ -205,7 +205,7 @@ export default {
                         let x = this.canvas_update[i][0], y = this.canvas_update[i][1];
                         // console.log(x);
                         // console.log(y)
-                        img_data_u32[x * store.canvas.width + x] = this.palette[this.canvas[y][x]]; // 0 - x, 1 - y
+                        img_data_u32[y * store.canvas.width + x] = this.palette[this.canvas[y][x]]; // 0 - x, 1 - y
                     }
                     this.canvas_update = [];
 
@@ -219,7 +219,15 @@ export default {
         },
 
         handle_canvas_click(event) {
-            console.log(event);
+            // console.log(event.offsetX);
+            // console.log(event.offsetY);
+            let x = event.offsetX; if(x < 0) x = 0;
+            let y = event.offsetY; if(y < 0) y = 0;
+            store.drawing.pixel.x = Math.floor(x / this.canvas_pixel_scale);
+            store.drawing.pixel.y = Math.floor(y / this.canvas_pixel_scale);
+            store.drawing.pixel.selected = true;
+            // this.place_pixel();
+            // store.drawing.pixel.selected = true;
         }
     },
 
@@ -242,12 +250,16 @@ export default {
             return (this.canvas_scale_xmul < ymul) ? xmul : ymul;
         },
 
+        canvas_pixel_scale() {
+            return (store.drawing.scale * this.canvas_scale_multiplier);
+        },
+
         canvas_width() {
-            return (store.canvas.width * store.drawing.scale * this.canvas_scale_multiplier);
+            return (store.canvas.width * this.canvas_pixel_scale);
         },
 
         canvas_height() {
-            return (store.canvas.height * store.drawing.scale * this.canvas_scale_multiplier);
+            return (store.canvas.height * this.canvas_pixel_scale);
         },
 
         canvas_left() {
