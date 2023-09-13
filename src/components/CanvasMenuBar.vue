@@ -2,6 +2,8 @@
 import { store } from '../info.js';
 import { GlobalEvents } from 'vue-global-events';
 import {RouterLink} from 'vue-router';
+
+import LoginWindow from '../components/LoginWindow.vue';
 </script>
 
 <template>
@@ -13,7 +15,7 @@ import {RouterLink} from 'vue-router';
             <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-help">Help</li>
         </ul>
         <ul id="menu-file" class="menu inactive">
-            <li><a href="#">Log in/Register</a></li>
+            <li><a @click="login_window = true; close_menu();">Log in/Register</a></li>
             <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
@@ -39,6 +41,9 @@ import {RouterLink} from 'vue-router';
             <li><a v-bind:href="'mailto:' + store.admin_email">Contact admin</a></li>
         </ul>
     </nav>
+    <template v-if="login_window">
+        <LoginWindow @cancel="login_window = false"/>
+    </template>
 </template>
 
 <script>
@@ -47,6 +52,7 @@ export default {
     data() {
         return {
             opened_menu: null,
+            login_window: false,
 
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
