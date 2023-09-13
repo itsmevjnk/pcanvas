@@ -24,7 +24,7 @@ import { watch } from 'vue'
                     height: canvas_height + 'px',
                     top: canvas_top + 'px',
                     left: canvas_left + 'px'
-                }" class="no-ctx-menu"></canvas>
+                }" class="no-ctx-menu" @mousedown.left = "handle_canvas_click"></canvas>
             </div>
             <VertScrollBar v-model="store.drawing.camera.y" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
@@ -170,7 +170,6 @@ export default {
             while(document.getElementById('main-canvas') == 0) {
                 // wait
             }
-            console.log('aids');
             this.handle_resize();
         },
 
@@ -217,6 +216,10 @@ export default {
             }
             
             requestAnimationFrame(this.handle_canvas); // keep itself running
+        },
+
+        handle_canvas_click(event) {
+            console.log(event);
         }
     },
 
