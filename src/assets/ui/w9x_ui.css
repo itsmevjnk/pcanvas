@@ -18,7 +18,8 @@
     font-weight: bold;
 }
 
-.w9x {
+.w9x,
+.w9x .window {
     font-family: W9xMSSansSerif, 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
     background-color: #c0c0c0;
     padding: 0.3rem;
@@ -326,11 +327,26 @@
     line-height: 1;
 }
 
+.w9x .window .title-bar h1 {
+    padding-bottom: 0.312rem;
+}
+
+/* Checkerboard pattern background */
+
 .w9x .bg-checker {
     background: url('./checker.svg');
     background-repeat: repeat;
     background-size: 0.3rem 0.3rem;
 }
+
+.w9x .bg-checker-black {
+    /* fits with blocking window container */
+    background: url('./checker-black.svg');
+    background-repeat: repeat;
+    background-size: 0.3rem 0.3rem;
+}
+
+/* Arrows for buttons */
 
 .w9x .arrow-left:after {
     display: inline-block;
@@ -378,6 +394,8 @@
     background-size: 0.9rem 0.6rem;
 }
 
+/* Scroll bars */
+
 .w9x .hscroll-container {
     display: flex;
     flex-direction: row;
@@ -395,7 +413,6 @@
     flex: 1;
 }
 
-
 .w9x .scroll-bar {
     box-shadow: inset -0.1rem -0.1rem 0 #000000, inset 0.1rem 0.1rem 0 #ffffff, inset -0.2rem -0.2rem 0 #808080, inset 0.2rem 0.2rem 0 #c0c0c0;
     background-color: #c0c0c0;
@@ -408,4 +425,36 @@
 
 .w9x .vscroll-container .scroll-bar {
     width: 100%;
+}
+
+/* Windows */
+.w9x .window-container.blocking {
+    /* NOTE: blocking! */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.w9x .window-container.non-blocking {
+    /* NOTE: blocking! */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+}
+
+.w9x .window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.w9x .window-container.non-blocking .window {
+    transform: translate(-50%, -50%);
 }
