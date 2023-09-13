@@ -11,8 +11,8 @@ import { watch } from 'vue'
 
 <template>
     <TitleBar title="pCanvas"/>
-    <CanvasMenuBar/>
-    <main id="main-canvas" v-show="!store.ui_test" :style="{
+    <CanvasMenuBar @update:ui_test="handle_ui_test_change"/>
+    <main id="main-canvas" v-show="!ui_test" :style="{
         'max-height': main_height + 'px'
     }">
         <div style="display: flex; flex-direction: row;" :style="{
@@ -30,7 +30,7 @@ import { watch } from 'vue'
         </div>
         <HorizScrollBar v-model="store.drawing.camera.x" :max="(cam_x_absmax == 0) ? 0 : 2"/>
     </main>
-    <main v-show="store.ui_test">
+    <main v-show="ui_test">
         <div class="msg-container">
             <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/warning.png"/>
             <div class="content">
@@ -89,6 +89,7 @@ export default {
             },
             canvas_update: [], // list of pixels to be updated
             canvas_redraw: true, // set to indicate that the canvas needs to be redrawn
+            ui_test: false,
             palette: [] // color palette - will be filled in by mounted()
         };
     },
@@ -109,11 +110,6 @@ export default {
                             0xFF800000, 0xFF800080, 0xFF808000, 0xFF808080,
                             0xFFC0C0C0, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF,
                             0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF];
-        
-        /* add watcher for UI test mode switch */
-        watch(store.ui_test, (new_val, old_val) => {
-            if(new_val) this.handle_resize();
-        });
         
         disable_ctx_menu_all(); // disable context menu for canvas
 
@@ -163,6 +159,19 @@ export default {
             else store.drawing.scale = store.drawing.min_scale;
 
             document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
+        },
+
+        handle_ui_test_change(val) {
+            this.ui_test = val;
+            if(!val) setTimeout(this.handle_ui_test_change_timeout, 1);
+        },
+
+        handle_ui_test_change_timeout() {
+            while(document.getElementById('main-canvas') == 0) {
+                // wait
+            }
+            console.log('aids');
+            this.handle_resize();
         },
 
         handle_canvas() {

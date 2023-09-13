@@ -35,7 +35,5 @@ export const store = reactive({
         id: 0
     },
 
-    ui_test: false,
-
     admin_email: 's223145883@deakin.edu.au'
 });

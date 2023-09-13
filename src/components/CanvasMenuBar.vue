@@ -4,6 +4,8 @@ import { GlobalEvents } from 'vue-global-events';
 import {RouterLink} from 'vue-router';
 
 import LoginWindow from '../components/LoginWindow.vue';
+
+const emits = defineEmits(['update:ui_test']);
 </script>
 
 <template>
@@ -28,7 +30,7 @@ import LoginWindow from '../components/LoginWindow.vue';
             <li class="separator"></li>
             <li>
                 <a @click="toggle_ui_test">
-                    <template v-if="!store.ui_test">Enter UI testing mode</template>
+                    <template v-if="!ui_test">Toggle UI testing mode</template>
                     <template v-else>Enter drawing mode</template>
                 </a>
             </li>
@@ -53,6 +55,7 @@ export default {
         return {
             opened_menu: null,
             login_window: false,
+            ui_test: false,
 
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
@@ -74,6 +77,7 @@ export default {
         this.menu_handler();
         $(window).resize(this.menu_handler);
         $(window).click(this.click_handler);
+        this.$emit('update:ui_test', this.ui_test);;
     },
 
     methods: {
@@ -112,7 +116,8 @@ export default {
         },
 
         toggle_ui_test() {
-            store.ui_test = !store.ui_test;
+            this.ui_test = !this.ui_test;
+            this.$emit('update:ui_test', this.ui_test);
             this.close_menu();
         },
         
