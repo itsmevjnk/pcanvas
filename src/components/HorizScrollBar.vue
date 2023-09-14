@@ -42,7 +42,7 @@ const emits = defineEmits(['update:modelValue']);
             <div class="scroll-bar" ref="scroll_bar" :style="{
                 width: 'calc(100% - ' + props.max + '*' + props.scale + ')',
                 left: (max_num !== 0) ? ('calc(' + props.modelValue + '*' + props.scale + ')') : '0px',
-                'min-width': props.scale, // sneaky one so we can get the scale in pixels
+                // 'min-width': props.scale, // sneaky one so we can get the scale in pixels
                 // 'max-height': props.max + 'px'
             }"
             @mousedown.left="mouse_down = true" @mouseup="mouse_down = false" @mouseleave="mouse_down = false"
