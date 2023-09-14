@@ -37,5 +37,6 @@ export default {
     position: absolute;
     border-style: solid;
     border-width: 0.3rem;
+    pointer-events: none;
 }
 </style>
