@@ -302,7 +302,14 @@ canvas {
     width: initial; /* we don't need the 100% from HorizScrollBar */
 }
 
+@keyframes blinker {
+    50% {
+        border-color: #ff0000;
+    }
+}
+
 #pointer {
     border-color: #00ff00;
+    animation: blinker 1s step-start infinite;
 }
 </style>
