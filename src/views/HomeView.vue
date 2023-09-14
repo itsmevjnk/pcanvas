@@ -25,6 +25,12 @@ import { watch } from 'vue'
                     top: canvas_top + 'px',
                     left: canvas_left + 'px'
                 }" class="no-ctx-menu" @mousedown.left = "handle_canvas_click"></canvas>
+                <div id="pointer" v-show="store.drawing.pixel.selected" :style="{
+                    width: store.drawing.scale + 'px',
+                    height: store.drawing.scale + 'px',
+                    top: 'calc(' + pointer_y + 'px - 0.3rem)',
+                    left: 'calc(' + pointer_x + 'px - 0.3rem)'
+                }"></div>
             </div>
             <VertScrollBar v-model="store.drawing.camera.y" :scale="scroll_scale" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
@@ -140,7 +146,7 @@ export default {
                             -   document.getElementsByTagName('footer')[0].offsetHeight;
             this.main_top_height = this.main_height - document.getElementsByClassName('hscroll-container')[0].offsetHeight;
             
-            setTimeout(this.handle_resize_timeout, 1); // give it some time to change
+            setTimeout(this.handle_resize_timeout, 10); // give it some time to change
             // console.log(store.drawing.min_scale);
         },
 
@@ -157,7 +163,7 @@ export default {
             store.drawing.scale_min = Math.ceil(Math.max(store.drawing.scale_min_min, this.canvas_container_dimensions.width / store.canvas.width, this.canvas_container_dimensions.height / store.canvas.height));
             if(store.drawing.scale < store.drawing.scale_min) store.drawing.scale = store.drawing.scale_min;
 
-            console.log(this.scroll_scale);
+            // console.log(this.scroll_scale);
 
             document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
         },
@@ -229,6 +235,7 @@ export default {
             store.drawing.pixel.selected = true;
             // this.place_pixel();
             // store.drawing.pixel.selected = true;
+            console.log([this.pointer_x, this.pointer_y]);
         }
     },
 
@@ -261,6 +268,14 @@ export default {
         cam_y_absmax() {
             let m = (this.canvas_height - this.canvas_container_dimensions.height) / 2;
             return (m < 0) ? -m : m;
+        },
+
+        pointer_x() {
+            return store.drawing.pixel.x * store.drawing.scale - (store.drawing.camera.x) * this.cam_x_absmax + 0.5;
+        },
+
+        pointer_y() {
+            return store.drawing.pixel.y * store.drawing.scale - (store.drawing.camera.y) * this.cam_y_absmax + 0.5;
         }
     }
 };
@@ -279,6 +294,7 @@ canvas {
 }
 
 #canvas-container {
+    position: relative;
     flex: 1;
     height: 100%;
     overflow: hidden;
@@ -286,5 +302,10 @@ canvas {
 
 .hscroll-container {
     width: initial; /* we don't need the 100% from HorizScrollBar */
+}
+
+#pointer {
+    position: absolute;
+    border: 0.3rem solid lime;
 }
 </style>
