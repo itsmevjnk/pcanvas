@@ -18,7 +18,7 @@ import {store} from '../info.js'
             </div>
             <div id="zoom-slider">
                 <span>Small</span>
-                <input type="range" :min="store.drawing.min_scale" :max="store.drawing.min_scale * store.drawing.scale_steps" :step="store.drawing.min_scale" v-model="store.drawing.scale"/>
+                <input type="range" :min="store.drawing.scale_min" :max="store.drawing.scale_max" step="1" v-model="store.drawing.scale"/>
                 <span>Large</span>
             </div>
             <div id="place-buttons" class="button-group" :class="{ hidden: !store.drawing.pixel.selected }">

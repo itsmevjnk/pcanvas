@@ -16,9 +16,11 @@ export const store = reactive({
         cooldown: false,
 
         /* canvas stuff */
-        min_scale: NaN, // to be updated in HomeView
-        scale: NaN,
-        scale_steps: 10,
+        scale: 1,
+        scale_min: 1,
+        scale_min_min: 8,
+        scale_max: 100,
+        
         camera: { // 0..2 --> -max..max
             x: 1,
             y: 1

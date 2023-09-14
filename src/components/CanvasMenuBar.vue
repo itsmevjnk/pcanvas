@@ -21,8 +21,8 @@ const emits = defineEmits(['update:ui_test']);
             <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
-            <li><a :class="{ disabled: store.drawing.scale >= store.drawing.min_scale * store.drawing.scale_steps }" @click="zoom_in">Zoom in</a></li>
-            <li><a :class="{ disabled: store.drawing.scale <= store.drawing.min_scale }" @click="zoom_out">Zoom out</a></li>
+            <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
+            <li><a :class="{ disabled: store.drawing.scale <= store.drawing.scale_min }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
             <li><a href="#">Go to...</a></li>
             <li class="separator"></li>
@@ -100,17 +100,15 @@ export default {
         },
 
         zoom_in() {
-            if(store.drawing.scale < store.drawing.min_scale * store.drawing.scale_steps) {
-                store.drawing.scale += store.drawing.min_scale;
-                if(store.drawing.scale > store.drawing.min_scale * store.drawing.scale_steps) store.drawing.scale = store.drawing.min_scale * store.drawing.scale_steps;
+            if(store.drawing.scale < store.drawing.scale_max) {
+                store.drawing.scale++;
                 this.close_menu();
             }
         },
 
         zoom_out() {
-            if(store.drawing.scale > store.drawing.min_scale) {
-                store.drawing.scale -= store.drawing.min_scale;
-                if(store.drawing.scale < store.drawing.min_scale) store.drawing.scale = store.drawing.min_scale;
+            if(store.drawing.scale > store.drawing.scale_min) {
+                store.drawing.scale--;
                 this.close_menu();
             }
         },

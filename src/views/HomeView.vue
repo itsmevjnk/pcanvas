@@ -26,9 +26,9 @@ import { watch } from 'vue'
                     left: canvas_left + 'px'
                 }" class="no-ctx-menu" @mousedown.left = "handle_canvas_click"></canvas>
             </div>
-            <VertScrollBar v-model="store.drawing.camera.y" :max="(cam_y_absmax == 0) ? 0 : 2"/>
+            <VertScrollBar v-model="store.drawing.camera.y" :scale="scroll_scale" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
-        <HorizScrollBar v-model="store.drawing.camera.x" :max="(cam_x_absmax == 0) ? 0 : 2"/>
+        <HorizScrollBar v-model="store.drawing.camera.x" :scale="scroll_scale" :max="(cam_x_absmax == 0) ? 0 : 2"/>
     </main>
     <main v-show="ui_test">
         <div class="msg-container">
@@ -153,10 +153,11 @@ export default {
             let e = document.getElementById('canvas-container');
             this.canvas_container_dimensions.width = e.offsetWidth;
             this.canvas_container_dimensions.height = e.offsetHeight;
-            let scale_norm = store.drawing.scale / store.drawing.min_scale;
-            store.drawing.min_scale = this.canvas_scale_multiplier_min / this.canvas_scale_multiplier;
-            if(!isNaN(store.drawing.scale)) store.drawing.scale = store.drawing.min_scale * scale_norm;
-            else store.drawing.scale = store.drawing.min_scale;
+            
+            store.drawing.scale_min = Math.ceil(Math.max(store.drawing.scale_min_min, this.canvas_container_dimensions.width / store.canvas.width, this.canvas_container_dimensions.height / store.canvas.height));
+            if(store.drawing.scale < store.drawing.scale_min) store.drawing.scale = store.drawing.scale_min;
+
+            console.log(this.scroll_scale);
 
             document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
         },
@@ -223,8 +224,8 @@ export default {
             // console.log(event.offsetY);
             let x = event.offsetX; if(x < 0) x = 0;
             let y = event.offsetY; if(y < 0) y = 0;
-            store.drawing.pixel.x = Math.floor(x / this.canvas_pixel_scale);
-            store.drawing.pixel.y = Math.floor(y / this.canvas_pixel_scale);
+            store.drawing.pixel.x = Math.floor(x / store.drawing.scale);
+            store.drawing.pixel.y = Math.floor(y / store.drawing.scale);
             store.drawing.pixel.selected = true;
             // this.place_pixel();
             // store.drawing.pixel.selected = true;
@@ -232,34 +233,16 @@ export default {
     },
 
     computed: {
-        canvas_scale_xmul() {
-            return this.canvas_container_dimensions.width / store.canvas.width;
-        },
-
-        canvas_scale_ymul() {
-            return this.canvas_container_dimensions.height / store.canvas.height;
-        },
-
-        canvas_scale_multiplier() {
-            return (this.canvas_scale_xmul > this.canvas_scale_ymul) ? this.canvas_scale_xmul : this.canvas_scale_ymul;
-        },
-
-        canvas_scale_multiplier_min() {
-            let xmul = this.canvas_container_dimensions.width / store.canvas.width;
-            let ymul = this.canvas_container_dimensions.height / store.canvas.height;
-            return (this.canvas_scale_xmul < ymul) ? xmul : ymul;
-        },
-
-        canvas_pixel_scale() {
-            return (store.drawing.scale * this.canvas_scale_multiplier);
+        scroll_scale() {
+            return Math.min((50 * store.drawing.scale / store.drawing.scale_max), 90) + '%';
         },
 
         canvas_width() {
-            return (store.canvas.width * this.canvas_pixel_scale);
+            return (store.canvas.width * store.drawing.scale);
         },
 
         canvas_height() {
-            return (store.canvas.height * this.canvas_pixel_scale);
+            return (store.canvas.height * store.drawing.scale);
         },
 
         canvas_left() {
@@ -271,13 +254,13 @@ export default {
         },
 
         cam_x_absmax() {
-            let m = this.canvas_width - this.canvas_container_dimensions.width;
-            return (m < 0) ? 0 : m;
+            let m = (this.canvas_width - this.canvas_container_dimensions.width) / 2;
+            return (m < 0) ? -m : m;
         },
 
         cam_y_absmax() {
-            let m = this.canvas_height - this.canvas_container_dimensions.height;
-            return (m < 0) ? 0 : m;
+            let m = (this.canvas_height - this.canvas_container_dimensions.height) / 2;
+            return (m < 0) ? -m : m;
         }
     }
 };
