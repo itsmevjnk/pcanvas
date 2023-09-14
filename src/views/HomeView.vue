@@ -8,6 +8,7 @@ import CanvasPointer from '../components/CanvasPointer.vue'
 import { disable_ctx_menu_all } from '../utils.js'
 import {store} from '../info.js'
 import { watch } from 'vue'
+import axios from 'axios'
 </script>
 
 <template>
@@ -86,7 +87,7 @@ export default {
         return {
             main_height: 0,
             main_top_height: 0,
-            canvas: Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15)),
+            canvas: null,
             canvas_container_dimensions: {
                 width: NaN,
                 height: NaN
@@ -117,11 +118,32 @@ export default {
         
         disable_ctx_menu_all(); // disable context menu for canvas
 
-        /* listen to window resize event to capture changes in canvas container size */
-        window.addEventListener('resize', this.handle_resize);
-        this.handle_resize();
+        /* fetch canvas */
+        axios.get(store.api + '/canvas/list?limit=1').then((ls_resp) => {
+            store.canvas.width = ls_resp.data.payload[0].width;
+            store.canvas.height = ls_resp.data.payload[0].height;
+            store.canvas.id = ls_resp.data.payload[0].id;
+            store.canvas.name = ls_resp.data.payload[0].name;
+            
+            this.canvas = Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15));
 
-        this.handle_canvas();
+            axios.get(store.api + '/canvas/fetch/' + store.canvas.id).then((f_resp) => {
+                /* populate pixels */
+                f_resp.data.payload.forEach((pixel) => {
+                    // console.log(pixel);
+                    let x = pixel.offset % store.canvas.width;
+                    let y = Math.floor(pixel.offset / store.canvas.width);
+                    this.canvas[y][x] = pixel.color;
+                });
+
+                /* listen to window resize event to capture changes in canvas container size */
+                window.addEventListener('resize', this.handle_resize);
+                this.handle_resize();
+
+                /* start canvas handling */
+                this.handle_canvas();
+            });
+        });
     },
 
     unmounted() {

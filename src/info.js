@@ -3,7 +3,9 @@ import {reactive} from 'vue';
 export const store = reactive({
     canvas: {
         width: 1024,
-        height: 1024        
+        height: 1024,
+        id: NaN,
+        name: ''        
     },
 
     drawing: {
@@ -37,5 +39,7 @@ export const store = reactive({
         id: 0
     },
 
-    admin_email: 's223145883@deakin.edu.au'
+    admin_email: 's223145883@deakin.edu.au',
+
+    api: 'http://localhost:8000'
 });
