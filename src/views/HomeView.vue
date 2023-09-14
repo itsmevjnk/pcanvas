@@ -4,6 +4,7 @@ import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
 import HorizScrollBar from '../components/HorizScrollBar.vue'
 import VertScrollBar from '../components/VertScrollBar.vue'
+import CanvasPointer from '../components/CanvasPointer.vue'
 import { disable_ctx_menu_all } from '../utils.js'
 import {store} from '../info.js'
 import { watch } from 'vue'
@@ -25,12 +26,9 @@ import { watch } from 'vue'
                     top: canvas_top + 'px',
                     left: canvas_left + 'px'
                 }" class="no-ctx-menu" @mousedown.left = "handle_canvas_click"></canvas>
-                <div id="pointer" v-show="store.drawing.pixel.selected" :style="{
-                    width: store.drawing.scale + 'px',
-                    height: store.drawing.scale + 'px',
-                    top: 'calc(' + pointer_y + 'px - 0.3rem)',
-                    left: 'calc(' + pointer_x + 'px - 0.3rem)'
-                }"></div>
+                <CanvasPointer id="pointer" v-show="store.drawing.pixel.selected"
+                    :width="store.drawing.scale + 'px'" :height="store.drawing.scale + 'px'"
+                    :x="'calc(' + pointer_x + 'px - 0.3rem)'" :y="'calc(' + pointer_y + 'px - 0.3rem)'"/>
             </div>
             <VertScrollBar v-model="store.drawing.camera.y" :scale="scroll_scale" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
@@ -305,7 +303,6 @@ canvas {
 }
 
 #pointer {
-    position: absolute;
     border: 0.3rem solid lime;
 }
 </style>
