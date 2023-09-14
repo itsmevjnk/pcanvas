@@ -490,3 +490,8 @@
 .w9x canvas.pixel {
     image-rendering: pixelated;
 }
+
+/* custom cursors */
+.w9x .cur-pen {
+    cursor: url('./icons/pen.svg'), auto;
+}
