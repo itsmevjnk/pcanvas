@@ -233,7 +233,7 @@ export default {
             store.drawing.pixel.selected = true;
             // this.place_pixel();
             // store.drawing.pixel.selected = true;
-            console.log([this.pointer_x, this.pointer_y]);
+            // console.log([this.pointer_x, this.pointer_y]);
         }
     },
 
@@ -303,6 +303,6 @@ canvas {
 }
 
 #pointer {
-    border: 0.3rem solid lime;
+    border-color: #00ff00;
 }
 </style>
