@@ -156,7 +156,9 @@ export default {
                     /* get cooldown timer */
                     // console.log(c_resp.data);
                     store.drawing.cooldown = c_resp.data.payload.timer;
-
+                }).catch((err) => {
+                    // TODO: do something?
+                }).finally(() => {
                     /* listen to window resize event to capture changes in canvas container size */
                     window.addEventListener('resize', this.handle_resize);
                     this.handle_resize();

@@ -46,11 +46,10 @@ export default {
     methods: {
         logout() {
             axios.delete(store.api + '/auth/logout', { withCredentials: true }).then((resp) => {
-                store.user.name = '';
-                this.$cookies.remove('id');
-                this.$cookies.remove('token');
-                this.$emit('done');
+                // nothing much to do here
             }).catch((err) => {
+                // nothing much to do here either
+            }).finally(() => {
                 store.user.name = '';
                 this.$cookies.remove('id');
                 this.$cookies.remove('token');
