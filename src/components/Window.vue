@@ -14,8 +14,14 @@ const props = defineProps({
         type: [String, Boolean],
         default: true
     },
+    close: {
+        type: [String, Boolean],
+        default: false
+    },
     title: String
 });
+
+const emits = defineEmits(['close']);
 
 const window_container = ref(null);
 </script>
@@ -34,6 +40,9 @@ const window_container = ref(null);
         }">
             <div class="title-bar" @mousemove="handle_drag">
                 <h1>{{ props.title }}</h1>
+                <div>
+                    <button v-if="close_bool" class="mini" @click="$emit('close')"><b style="font-size: 1.05rem; font-weight: bold; line-height: 0.6;">&#xD7;</b></button>
+                </div>
             </div>
             <slot></slot>
         </div>
@@ -101,6 +110,11 @@ export default {
         moveable_bool() {
             if(typeof this.moveable === 'boolean') return this.moveable;
             else return (this.moveable.toLowerCase() != 'false');
+        },
+
+        close_bool() {
+            if(typeof this.close === 'boolean') return this.close;
+            else return (this.close.toLowerCase() != 'false');
         }
     }
 };

@@ -3,7 +3,8 @@ import { store } from '../info.js';
 import { GlobalEvents } from 'vue-global-events';
 import {RouterLink} from 'vue-router';
 
-import LoginWindow from '../components/LoginWindow.vue';
+import LoginWindow from './LoginWindow.vue';
+import LogoutWindow from './LogoutWindow.vue';
 
 const emits = defineEmits(['update:ui_test']);
 </script>
@@ -17,7 +18,10 @@ const emits = defineEmits(['update:ui_test']);
             <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-help">Help</li>
         </ul>
         <ul id="menu-file" class="menu inactive">
-            <li><a @click="login_window = true; close_menu();">Log in/Register</a></li>
+            <li>
+                <a @click="login_window = true; close_menu();" v-if="store.user.name == ''">Log in/Register</a>
+                <a @click="logout_window = true; close_menu();" v-else>Log out</a>
+            </li>
             <li><a href="#">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu inactive">
@@ -43,9 +47,8 @@ const emits = defineEmits(['update:ui_test']);
             <li><a v-bind:href="'mailto:' + store.admin_email">Contact admin</a></li>
         </ul>
     </nav>
-    <template v-if="login_window">
-        <LoginWindow @cancel="login_window = false" @done="login_window = false" />
-    </template>
+    <LoginWindow @cancel="login_window = false" @done="login_window = false"  v-if="login_window"/>
+    <LogoutWindow @cancel="logout_window = false" @done="logout_window = false"  v-if="logout_window"/>
 </template>
 
 <script>
@@ -55,6 +58,7 @@ export default {
         return {
             opened_menu: null,
             login_window: false,
+            logout_window: false,
             ui_test: false,
 
             /* handler for aligning drop-down menu with its category item */
