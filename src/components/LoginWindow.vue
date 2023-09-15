@@ -27,11 +27,11 @@ const emits = defineEmits(['cancel'])
                     <div class="prompt-text">
                         <div class="field">
                             <label for="user">User name:</label>
-                            <input name="user" type="text" v-model="user">
+                            <input name="user" type="text" v-model="user" class="no-focus">
                         </div>
                         <div class="field">
                             <label for="password">Password:</label>
-                            <input name="password" type="password" v-model="password">
+                            <input name="password" type="password" v-model="password" class="no-focus">
                         </div>
                     </div>
                 </div>
