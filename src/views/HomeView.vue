@@ -95,6 +95,7 @@ export default {
             canvas_update: [], // list of pixels to be updated
             canvas_redraw: true, // set to indicate that the canvas needs to be redrawn
             ui_test: false,
+            cooldown_handler: null,
             palette: [] // color palette - will be filled in by mounted()
         };
     },
@@ -118,6 +119,21 @@ export default {
         
         disable_ctx_menu_all(); // disable context menu for canvas
 
+        /* fetch user status */
+        axios.get(store.api + '/auth/query', { withCredentials: true }).then((resp) => {
+            // console.log(resp.data.payload);
+            if(resp.data.payload.email !== undefined) {
+                store.user.name = resp.data.payload.user;
+                store.user.moderator = resp.data.payload.moderator;
+            } else {
+                this.$cookies.remove('id');
+                this.$cookies.remove('token');
+            }
+            
+        }).catch((error) => {
+            // TODO: do something?
+        });
+
         /* fetch canvas */
         axios.get(store.api + '/canvas/list?limit=1').then((ls_resp) => {
             store.canvas.width = ls_resp.data.payload[0].width;
@@ -127,7 +143,7 @@ export default {
             
             this.canvas = Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15));
 
-            axios.get(store.api + '/canvas/fetch/' + store.canvas.id).then((f_resp) => {
+            axios.get(store.api + '/canvas/' + store.canvas.id + '/fetch').then((f_resp) => {
                 /* populate pixels */
                 f_resp.data.payload.forEach((pixel) => {
                     // console.log(pixel);
@@ -136,12 +152,18 @@ export default {
                     this.canvas[y][x] = pixel.color;
                 });
 
-                /* listen to window resize event to capture changes in canvas container size */
-                window.addEventListener('resize', this.handle_resize);
-                this.handle_resize();
+                axios.get(store.api + '/canvas/' + store.canvas.id + '/cooldown', { withCredentials: true }).then((c_resp) => {
+                    /* get cooldown timer */
+                    // console.log(c_resp.data);
+                    store.drawing.cooldown = c_resp.data.payload.timer;
 
-                /* start canvas handling */
-                this.handle_canvas();
+                    /* listen to window resize event to capture changes in canvas container size */
+                    window.addEventListener('resize', this.handle_resize);
+                    this.handle_resize();
+
+                    /* start canvas handling */
+                    this.handle_canvas();
+                });
             });
         });
     },
@@ -152,11 +174,29 @@ export default {
 
     methods: {
         place_pixel() {
-            // TODO: backend stuff
-            this.canvas[store.drawing.pixel.y][store.drawing.pixel.x] = store.drawing.color; // add pixel to local canvas
-            // store.drawing.cooldown = true;
-            store.drawing.pixel.selected = false;
-            this.canvas_update.push([store.drawing.pixel.x, store.drawing.pixel.y]); // add to canvas updating queue
+            if(store.drawing.cooldown > 0) return; // cooldown is not over
+            axios.put(store.api + '/canvas/' + store.canvas.id + '/place', {
+                offset: store.drawing.pixel.y * store.canvas.width + store.drawing.pixel.x,
+                color: store.drawing.color
+            }, { withCredentials: true }).then((resp) => {
+                store.drawing.cooldown = resp.data.payload.timer;
+                store.drawing.pixel.selected = false;
+                // console.log(store.drawing);
+                this.canvas[store.drawing.pixel.y][store.drawing.pixel.x] = store.drawing.color; // TODO: listen to backend for changes (WebSocket?)
+                this.canvas_update.push([store.drawing.pixel.x, store.drawing.pixel.y]); // add to canvas updating queue
+                this.set_cooldown_timer();
+            });
+        },
+
+        set_cooldown_timer() {
+            if(store.drawing.cooldown > 0 && this.cooldown_handler === null)
+                this.cooldown_handler = setInterval(() => {
+                    store.drawing.cooldown--;
+                    if(store.drawing.cooldown == 0) {
+                        clearInterval(this.cooldown_handler);
+                        this.cooldown_handler = null;
+                    }
+                }, 1000);
         },
 
         handle_resize() {
@@ -223,7 +263,7 @@ export default {
                 }
 
                 if(this.canvas_update.length > 0) {
-                    console.log(this.canvas_update);
+                    // console.log(this.canvas_update);
                     /* update some pixels */
                     let img_data = ctx.getImageData(0, 0, store.canvas.width, store.canvas.height); // retrieve image data from canvas
                     let img_data_u32 = new Uint32Array(img_data.data.buffer);

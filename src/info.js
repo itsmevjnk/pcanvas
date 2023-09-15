@@ -15,7 +15,7 @@ export const store = reactive({
             y: 0
         },
         color: 0,
-        cooldown: false,
+        cooldown: 0,
 
         /* canvas stuff */
         scale: 1,
@@ -36,7 +36,7 @@ export const store = reactive({
 
     user: {
         name: '',
-        id: 0
+        moderator: false
     },
 
     admin_email: 's223145883@deakin.edu.au',

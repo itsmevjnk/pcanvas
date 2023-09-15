@@ -22,14 +22,14 @@ import {store} from '../info.js'
                 <span>Large</span>
             </div>
             <div id="place-buttons" class="button-group" :class="{ hidden: !store.drawing.pixel.selected }">
-                <button :disabled="store.drawing.cooldown" @click="$emit('place')">Place</button>
+                <button :disabled="store.drawing.cooldown > 0" @click="$emit('place')">Place</button>
                 <button @click="store.drawing.pixel.selected = false">Cancel</button>
             </div>
         </div>
         <div class="status-container">
             <div class="status-item flex-60">
-                <template v-if="!store.drawing.pixel.selected">Select a pixel to draw on...</template>
-                <template v-else-if="store.drawing.cooldown">You cannot place a pixel right now.</template>
+                <template v-if="store.drawing.cooldown > 0">You can place another pixel in {{ Math.floor(store.drawing.cooldown / 60) }}:{{ store.drawing.cooldown % 60 }}.</template>
+                <template v-else-if="!store.drawing.pixel.selected">Select a pixel to draw on...</template>
                 <template v-else>Select the colour, then click Place to draw.</template>
             </div>
             <div class="status-item flex-15">{{ (store.drawing.pixel.selected) ? (store.drawing.pixel.x + ',' + store.drawing.pixel.y) : '&nbsp;' }}</div>

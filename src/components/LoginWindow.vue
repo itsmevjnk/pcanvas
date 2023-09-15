@@ -1,6 +1,8 @@
 <script setup>
 import Window from './Window.vue';
 import { disable_ctx_menu_all } from '../utils.js';
+import axios from 'axios';
+import { store } from '../info';
 
 const props = defineProps({
     z_index: {
@@ -9,11 +11,11 @@ const props = defineProps({
     }
 });
 
-const emits = defineEmits(['cancel'])
+const emits = defineEmits(['cancel', 'done'])
 </script>
 
 <template>
-    <Window title="Log in" moveable="false">
+    <Window title="Log in" moveable="false" :z_index="z_index_num">
         <div class="outer">
             <div class="prompt">
                 <div class="row">
@@ -27,20 +29,31 @@ const emits = defineEmits(['cancel'])
                     <div class="prompt-text">
                         <div class="field">
                             <label for="user">User name:</label>
-                            <input name="user" type="text" v-model="user" class="no-focus">
+                            <input name="user" type="text" v-model="user" class="no-focus" :disabled="input_disable">
                         </div>
                         <div class="field">
                             <label for="password">Password:</label>
-                            <input name="password" type="password" v-model="password" class="no-focus">
+                            <input name="password" type="password" v-model="password" class="no-focus" :disabled="input_disable">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="buttons">
-                <button @click="submit">OK</button>
-                <button @click="$emit('cancel')">Cancel</button>
-                <button>Register</button>
+                <button @click="submit" :disabled="input_disable">OK</button>
+                <button @click="$emit('cancel')" :disabled="input_disable">Cancel</button>
+                <button :disabled="input_disable">Register</button>
             </div>
+        </div>
+    </Window>
+    <Window title="Error" :z_index="z_index_num + 1" v-if="error !== null">
+        <div class="msg-container">
+            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/error.png">
+            <div class="content">
+                {{ error }}
+            </div>
+        </div>
+        <div class="button-group">
+            <button @click="input_disable = false; error = null;">OK</button>
         </div>
     </Window>
 </template>
@@ -52,7 +65,9 @@ export default {
     data() {
         return {
             user: '',
-            password: ''
+            password: '',
+            error: null,
+            input_disable: false
         };
     },
 
@@ -62,7 +77,32 @@ export default {
 
     methods: {
         submit() {
+            this.input_disable = true;
+            axios.put(store.api + '/auth/login', {
+                user: this.user,
+                password: this.password
+            }).then((resp) => {
+                /* login successful */
+                store.user.name = resp.data.payload.user;
+                store.user.moderator = resp.data.payload.moderator;
+                this.$cookies.set('id', resp.data.payload.id);
+                this.$cookies.set('token', resp.data.payload.token);
+                this.input_disable = false;
+                this.$emit('done');
+            }).catch((error) => {
+                if(error.response) {
+                    if(error.response.status == 400)
+                        this.error = 'Invalid user name or password.';
+                    else
+                        this.error = 'Server error:\n' + resp.data.message;
+                }
+            });
+        }
+    },
 
+    computed: {
+        z_index_num() {
+            return parseFloat(this.z_index);
         }
     }
 };
@@ -149,5 +189,19 @@ label {
         flex-direction: column;
         align-items: center;
     }
+}
+
+.msg-container .content {
+    white-space: pre;
+}
+
+
+
+.msg-container {
+    margin-bottom: 0.5rem;
+}
+
+.button-group {
+    margin-bottom: 1rem;
 }
 </style>

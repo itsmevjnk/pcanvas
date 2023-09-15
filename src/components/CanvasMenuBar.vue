@@ -44,7 +44,7 @@ const emits = defineEmits(['update:ui_test']);
         </ul>
     </nav>
     <template v-if="login_window">
-        <LoginWindow @cancel="login_window = false"/>
+        <LoginWindow @cancel="login_window = false" @done="login_window = false" />
     </template>
 </template>
 
