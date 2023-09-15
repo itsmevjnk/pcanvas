@@ -10,6 +10,10 @@ const props = defineProps({
         type: String,
         default: 'none'
     },
+    moveable: {
+        type: [String, Boolean],
+        default: true
+    },
     title: String
 });
 
@@ -42,7 +46,6 @@ export default {
 
     data() {
         return {
-            
             offset: {
                 x: 0,
                 y: 0
@@ -73,7 +76,7 @@ export default {
         },
 
         handle_drag(event) {
-            if(event.buttons & 1) {
+            if(this.moveable_bool && event.buttons & 1) {
                 // left button
                 this.offset.x += event.movementX;
                 this.offset.y += event.movementY;
@@ -90,6 +93,13 @@ export default {
             // console.log(y_absmax);
             if(this.offset.y < -y_absmax) this.offset.y = -0.9 * y_absmax;
             else if(this.offset.y > y_absmax) this.offset.y = 0.9 * y_absmax;
+        }
+    },
+
+    computed: {
+        moveable_bool() {
+            if(typeof this.moveable == Boolean) return this.moveable;
+            else return (this.moveable.toLowerCase() != 'false');
         }
     }
 };

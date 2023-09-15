@@ -13,7 +13,7 @@ const emits = defineEmits(['cancel'])
 </script>
 
 <template>
-    <Window title="Log in">
+    <Window title="Log in" moveable="false">
         <div class="outer">
             <div class="prompt">
                 <div class="row">
@@ -37,7 +37,7 @@ const emits = defineEmits(['cancel'])
                 </div>
             </div>
             <div class="buttons">
-                <button>OK</button>
+                <button @click="submit">OK</button>
                 <button @click="$emit('cancel')">Cancel</button>
                 <button>Register</button>
             </div>
@@ -58,6 +58,12 @@ export default {
 
     mounted() {
         disable_ctx_menu_all();
+    },
+
+    methods: {
+        submit() {
+
+        }
     }
 };
 </script>
