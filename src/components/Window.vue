@@ -56,6 +56,7 @@ export default {
     mounted() {
         window.addEventListener('mousedown', this.handle_click);
         window.addEventListener('resize', this.handle_resize);
+        // console.log(typeof this.moveable);
     },
 
     unmounted() {
@@ -98,7 +99,7 @@ export default {
 
     computed: {
         moveable_bool() {
-            if(typeof this.moveable == Boolean) return this.moveable;
+            if(typeof this.moveable === 'boolean') return this.moveable;
             else return (this.moveable.toLowerCase() != 'false');
         }
     }
