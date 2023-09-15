@@ -5,7 +5,7 @@ import {store} from '../info.js'
 <template>
     <footer>
         <div class="actions">
-            <div class="mspaint-colsel">
+            <div class="mspaint-colsel" :class="{ 'hidden-login': store.user.name == '' }">
                 <div v-bind:class="'cell large bg-' + store.drawing.color"></div>
                 <div class="color-board">
                     <div class="row">
@@ -21,14 +21,18 @@ import {store} from '../info.js'
                 <input type="range" :min="store.drawing.scale_min" :max="store.drawing.scale_max" step="1" v-model="store.drawing.scale"/>
                 <span>Large</span>
             </div>
-            <div id="place-buttons" class="button-group" :class="{ hidden: !store.drawing.pixel.selected }">
+            <div id="place-buttons" class="button-group" :class="{
+                hidden: !store.drawing.pixel.selected,
+                'hidden-login': store.user.name == ''
+            }">
                 <button :disabled="store.drawing.cooldown > 0" @click="$emit('place')">Place</button>
                 <button @click="store.drawing.pixel.selected = false">Cancel</button>
             </div>
         </div>
         <div class="status-container">
             <div class="status-item flex-60">
-                <template v-if="store.drawing.cooldown > 0">You can place another pixel in {{ Math.floor(store.drawing.cooldown / 60) }}:{{ store.drawing.cooldown % 60 }}.</template>
+                <template v-if="store.user.name == ''">Log in to start placing pixels...</template>
+                <template v-else-if="store.drawing.cooldown > 0">You can place another pixel in {{ Math.floor(store.drawing.cooldown / 60) }}:{{ store.drawing.cooldown % 60 }}.</template>
                 <template v-else-if="!store.drawing.pixel.selected">Select a pixel to draw on...</template>
                 <template v-else>Select the colour, then click Place to draw.</template>
             </div>
@@ -100,6 +104,10 @@ footer {
     flex: 0.25;
 }
 
+.hidden-login {
+    visibility: hidden;
+}
+
 /* Actions div in mobile view */
 @media screen and (max-width: 825px) {
     .actions {
@@ -137,6 +145,10 @@ footer {
     .w9x .status-item:not(:last-child) {
         margin-right: 0;
         margin-bottom: 0.25rem;
+    }
+
+    .hidden-login {
+        display: none;
     }
 }
 

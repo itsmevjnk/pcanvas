@@ -10,7 +10,7 @@ export const store = reactive({
 
     drawing: {
         pixel: {
-            selected: true,
+            selected: false,
             x: 0,
             y: 0
         },
