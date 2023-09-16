@@ -5,8 +5,9 @@ import {RouterLink} from 'vue-router';
 
 import LoginWindow from './LoginWindow.vue';
 import LogoutWindow from './LogoutWindow.vue';
+import GoToWindow from './GoToWindow.vue';
 
-const emits = defineEmits(['update:ui_test', 'resize']);
+const emits = defineEmits(['update:ui_test', 'resize', 'center_camera']);
 </script>
 
 <template>
@@ -28,7 +29,7 @@ const emits = defineEmits(['update:ui_test', 'resize']);
             <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
             <li><a :class="{ disabled: store.drawing.scale <= store.drawing.scale_min }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
-            <li><a href="#">Go to...</a></li>
+            <li><a href="#" @click="goto_window = true; close_menu();" :class="{disabled: ui_test}">Go to...</a></li>
             <li class="separator"></li>
             <li><a href="#">Past canvases</a></li>
             <li class="separator"></li>
@@ -49,6 +50,7 @@ const emits = defineEmits(['update:ui_test', 'resize']);
     </nav>
     <LoginWindow @cancel="login_window = false" @done="logio_resize(); login_window = false;" v-if="login_window"/>
     <LogoutWindow @cancel="logout_window = false" @done="logio_resize(); logout_window = false;" v-if="logout_window"/>
+    <GoToWindow @cancel="goto_window = false" @done="goto_window = false; $emit('center_camera');" v-if="goto_window"/>
 </template>
 
 <script>
@@ -59,6 +61,7 @@ export default {
             opened_menu: null,
             login_window: false,
             logout_window: false,
+            goto_window: false,
             ui_test: false,
 
             /* handler for aligning drop-down menu with its category item */

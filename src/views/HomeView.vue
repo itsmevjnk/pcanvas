@@ -14,7 +14,7 @@ const canvas_container = ref(null);
 
 <template>
     <TitleBar title="pCanvas"/>
-    <CanvasMenuBar @update:ui_test="handle_ui_test_change" @resize="handle_resize"/>
+    <CanvasMenuBar @update:ui_test="handle_ui_test_change" @resize="handle_resize" @center_camera="center_camera = true"/>
     <main id="main-canvas" v-show="!ui_test" :style="{
         'max-height': main_height + 'px'
     }">
@@ -82,6 +82,7 @@ export default {
             canvas_update: [], // list of pixels to be updated
             canvas_redraw: true, // set to indicate that the canvas needs to be redrawn
             ui_test: false,
+            center_camera: false, // will be picked up by canvas handler
             cooldown_handler: null,
             palette: [] // color palette - will be filled in by mounted()
         };
@@ -279,6 +280,17 @@ export default {
                         ctx.drawImage(img_bitmap, 0, 0);
                     });
                 }
+
+                /* center camera to selected pixel if requested */
+                if(this.center_camera && this.$refs.canvas_container.clientHeight > 0) {
+                    let [scroll_x, scroll_y] = this.calculate_scroll_xy(store.drawing.pixel.x, store.drawing.pixel.y, store.drawing.scale);
+
+                    /* set new scroll position */
+                    this.$refs.canvas_container.scrollLeft = scroll_x;
+                    this.$refs.canvas_container.scrollTop = scroll_y;
+
+                    this.center_camera = false; // reset flag
+                }
             }
             
             requestAnimationFrame(this.handle_canvas); // keep itself running
@@ -297,6 +309,22 @@ export default {
             // console.log([this.pointer_x, this.pointer_y]);
         },
 
+        calculate_scroll_xy(center_x, center_y, scale) {
+            let container = this.$refs.canvas_container;
+
+            /* work back to expected camera position under new scale */
+            let scroll_x = center_x * scale - container.clientWidth / 2;
+            let scroll_y = center_y * scale - container.clientHeight / 2;
+
+            /* perform bounds checking */
+            if(scroll_x < 0) scroll_x = 0;
+            else if(scroll_x > this.canvas_width - container.clientWidth) scroll_x = this.canvas_width - container.clientWidth;
+            if(scroll_y < 0) scroll_y = 0;
+            else if(scroll_y > this.canvas_height - container.clientHeight) scroll_y = this.canvas_height - container.clientHeight;
+            
+            return [scroll_x, scroll_y];
+        },
+
         handle_scale_change(new_scale, old_scale) {
             // console.log(new_scale, old_scale);
             
@@ -306,15 +334,7 @@ export default {
             let center_y = (container.scrollTop + container.clientHeight / 2) / old_scale;
             // console.log(center_x, center_y);
 
-            /* work back to expected camera position under new scale */
-            let scroll_x = center_x * new_scale - container.clientWidth / 2;
-            let scroll_y = center_y * new_scale - container.clientHeight / 2;
-
-            /* perform bounds checking */
-            if(scroll_x < 0) scroll_x = 0;
-            else if(scroll_x > this.canvas_width - container.clientWidth) scroll_x = this.canvas_width - container.clientWidth;
-            if(scroll_y < 0) scroll_y = 0;
-            else if(scroll_y > this.canvas_height - container.clientHeight) scroll_y = this.canvas_height - container.clientHeight;
+            let [scroll_x, scroll_y] = this.calculate_scroll_xy(center_x, center_y, new_scale);
 
             /* set new scroll position */
             container.scrollLeft = scroll_x;
