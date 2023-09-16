@@ -2,8 +2,6 @@
 import TitleBar from '../components/TitleBar.vue'
 import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
-import HorizScrollBar from '../components/HorizScrollBar.vue'
-import VertScrollBar from '../components/VertScrollBar.vue'
 import CanvasPointer from '../components/CanvasPointer.vue'
 import { disable_ctx_menu_all } from '../utils.js'
 import {store} from '../info.js'
@@ -18,7 +16,7 @@ import axios from 'axios'
         'max-height': main_height + 'px'
     }">
         <div style="display: flex; flex-direction: row;" :style="{
-            height: main_top_height + 'px'
+            height: 'calc(' + main_height + 'px - 0.1rem)'
         }">
             <div id="canvas-container">
                 <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
@@ -202,7 +200,6 @@ export default {
                             -   document.getElementsByTagName('header')[0].offsetHeight
                             -   document.getElementsByTagName('nav')[0].offsetHeight
                             -   document.getElementsByTagName('footer')[0].offsetHeight;
-            this.main_top_height = this.main_height;
             
             setTimeout(this.handle_resize_timeout, 10); // give it some time to change
             // console.log(store.drawing.min_scale);
@@ -355,8 +352,10 @@ canvas {
     overflow: auto;
 }
 
-.hscroll-container {
-    width: initial; /* we don't need the 100% from HorizScrollBar */
+#main-canvas {
+    border-bottom: 0.1rem solid #ffffff;
+    border-right: 0.1rem solid #ffffff;
+    box-sizing: border-box;
 }
 
 @keyframes blinker {
