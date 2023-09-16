@@ -18,7 +18,8 @@ import { disable_ctx_menu_all } from '../utils.js'
                     Email: <a href="mailto:s223145883@deakin.edu.au">s223145883@deakin.edu.au</a>
                 </p>
                 <p>
-                    Written in HTML, CSS and JS (JQuery + Vue 3) for the SIT120 2.2C task.
+                    Written in HTML, CSS and JS (JQuery + Vue 3) for the SIT120 2.2C and 3.1D tasks.<br>
+                    Backend written in JS (NodeJS + Express) as part of the SIT120 3.1D task.
                 </p>
             </div>
         </div>
