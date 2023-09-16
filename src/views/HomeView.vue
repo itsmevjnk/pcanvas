@@ -13,7 +13,7 @@ import axios from 'axios'
 
 <template>
     <TitleBar title="pCanvas"/>
-    <CanvasMenuBar @update:ui_test="handle_ui_test_change"/>
+    <CanvasMenuBar @update:ui_test="handle_ui_test_change" @resize="handle_resize"/>
     <main id="main-canvas" v-show="!ui_test" :style="{
         'max-height': main_height + 'px'
     }">

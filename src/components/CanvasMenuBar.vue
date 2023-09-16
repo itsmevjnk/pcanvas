@@ -6,7 +6,7 @@ import {RouterLink} from 'vue-router';
 import LoginWindow from './LoginWindow.vue';
 import LogoutWindow from './LogoutWindow.vue';
 
-const emits = defineEmits(['update:ui_test']);
+const emits = defineEmits(['update:ui_test', 'resize']);
 </script>
 
 <template>
@@ -141,6 +141,8 @@ export default {
         update_menu() {
             if(this.opened_menu === null) this.activate_menu(''); // will not match any menu --> disable all menu
             else this.activate_menu(this.opened_menu.dataset.target);
+
+            if(getComputedStyle(document.querySelector('.menu-bar .menu')).position != 'absolute') this.$emit('resize'); // notify HomeView to take action and resize <main>
         },
         
         /* window click handler */
