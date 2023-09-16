@@ -15,7 +15,7 @@ const emits = defineEmits(['cancel', 'done'])
 </script>
 
 <template>
-    <Window title="Log in" moveable="false" :z_index="z_index_num">
+    <Window :title="(register) ? 'Register' : 'Log in'" moveable="false" :z_index="z_index_num">
         <div class="outer">
             <div class="prompt">
                 <div class="row">
@@ -28,12 +28,21 @@ const emits = defineEmits(['cancel', 'done'])
                     <img src="../assets/ui/icons/network.png" class="icon pixel invisible"/>
                     <div class="prompt-text">
                         <div class="field">
-                            <label for="user">User name:</label>
+                            <label for="user" v-if="!register">User name/Email:</label>
+                            <label for="user" v-else>User name:</label>
                             <input name="user" type="text" v-model="user" class="no-focus" :disabled="input_disable">
+                        </div>
+                        <div class="field" v-if="register">
+                            <label for="email">Email address:</label>
+                            <input name="email" type="text" v-model="email" class="no-focus" :disabled="input_disable">
                         </div>
                         <div class="field">
                             <label for="password">Password:</label>
                             <input name="password" type="password" v-model="password" class="no-focus" :disabled="input_disable">
+                        </div>
+                        <div class="field" v-if="register">
+                            <label for="password_confirm">Confirm password:</label>
+                            <input name="password_confirm" type="password" v-model="password_confirm" class="no-focus" :disabled="input_disable">
                         </div>
                     </div>
                 </div>
@@ -41,7 +50,8 @@ const emits = defineEmits(['cancel', 'done'])
             <div class="buttons">
                 <button @click="submit" :disabled="input_disable">OK</button>
                 <button @click="$emit('cancel')" :disabled="input_disable">Cancel</button>
-                <button :disabled="input_disable">Register</button>
+                <button @click="register = true; email = ''; password_confirm = '';" :disabled="input_disable" v-if="!register">Register</button>
+                <button @click="register = false;" :disabled="input_disable" v-else>Log in</button>
             </div>
         </div>
     </Window>
@@ -49,11 +59,31 @@ const emits = defineEmits(['cancel', 'done'])
         <div class="msg-container">
             <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/error.png">
             <div class="content">
-                {{ error }}
+                <div>{{ error }}</div>
+                <ul v-if="error_list.length > 0">
+                    <li v-for="msg in error_list">{{ msg }}</li>
+                </ul>
             </div>
         </div>
         <div class="button-group">
             <button @click="input_disable = false; error = null;">OK</button>
+        </div>
+    </Window>
+    <Window title="Success" :z_index="z_index_num + 1" v-if="register_success">
+        <div class="msg-container">
+            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/info.png">
+            <div class="content">
+                Registration complete. You can now sign in using these credentials:
+                <ul>
+                    <li>User name: {{ this.user }}</li>
+                    <li>Email address: {{ this.email }}</li>
+                    <li>Password: (as supplied)</li>
+                </ul>
+                Happy drawing!
+            </div>
+        </div>
+        <div class="button-group">
+            <button @click="input_disable = false; $emit('done');">OK</button>
         </div>
     </Window>
 </template>
@@ -67,7 +97,13 @@ export default {
             user: '',
             password: '',
             error: null,
-            input_disable: false
+            error_list: [],
+            input_disable: false,
+
+            register: false,
+            email: '',
+            password_confirm: '',
+            register_success: false
         };
     },
 
@@ -76,27 +112,73 @@ export default {
     },
 
     methods: {
+        raise_error_list() {
+            this.error = (this.error_list.length > 0) ? 'One or more error(s) have been found below.\nPlease correct them before trying again:' : null;
+        },
+
         submit() {
             this.input_disable = true;
-            axios.put(store.api + '/auth/login', {
-                user: this.user,
-                password: this.password
-            }).then((resp) => {
-                /* login successful */
-                store.user.name = resp.data.payload.user;
-                store.user.moderator = resp.data.payload.moderator;
-                this.$cookies.set('id', resp.data.payload.id);
-                this.$cookies.set('token', resp.data.payload.token);
-                this.input_disable = false;
-                this.$emit('done');
-            }).catch((error) => {
-                if(error.response) {
-                    if(error.response.status == 400)
-                        this.error = 'Invalid user name or password.';
-                    else
-                        this.error = 'Server error:\n' + resp.data.message;
-                }
-            });
+            if(this.register) {
+                /* register */
+
+                /* client side input validation */
+                if(this.user == '' || this.email == '' || this.password == '' || this.password_confirm == '')
+                    this.error_list.push('All input fields must be filled.');
+                if(this.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) == null)
+                    this.error_list.push('Email address is not valid.');
+                if(this.password != '' && this.password.length < store.user.min_pw_length)
+                    this.error_list.push('Password must be at least ' + store.user.min_pw_length + ' characters in length.');
+                if(this.password_confirm != this.password)
+                    this.error_list.push('Password confirmation field does not match.');
+                
+                if(this.error_list.length == 0) {
+                    /* contact API if input is validated */
+                    axios.get(store.api + '/auth/exists?user=' + this.user + '&email=' + this.email).then((chk_resp) => {
+                        if(chk_resp.data.payload.user)
+                            this.error_list.push('An user with the specified name already exists.');
+                        if(chk_resp.data.payload.email)
+                            this.error_list.push('An user with the specified email address already exists.');
+                        if(this.error_list.length > 0)
+                            this.raise_error_list();
+                        else
+                            axios.post(store.api + '/auth/register', {
+                                user: this.user,
+                                password: this.password,
+                                email: this.email
+                            }).then((reg_resp) => {
+                                store.user.name = reg_resp.data.payload.user;
+                                store.user.moderator = reg_resp.data.payload.moderator;
+                                this.$cookies.set('id', reg_resp.data.payload.id);
+                                this.$cookies.set('token', reg_resp.data.payload.token);
+                                this.register_success = true;
+                            });
+                    })
+                } else this.raise_error_list();
+            } else {
+                /* log in */
+                // console.log('logging in');
+                if(this.user == '' || this.password == '')
+                    this.error = 'Please enter an user name (or email address) and a password.';
+                else axios.put(store.api + '/auth/login', {
+                    user: this.user,
+                    password: this.password
+                }).then((resp) => {
+                    /* login successful */
+                    store.user.name = resp.data.payload.user;
+                    store.user.moderator = resp.data.payload.moderator;
+                    this.$cookies.set('id', resp.data.payload.id);
+                    this.$cookies.set('token', resp.data.payload.token);
+                    this.input_disable = false;
+                    this.$emit('done');
+                }).catch((error) => {
+                    if(error.response) {
+                        if(error.response.status == 400)
+                            this.error = 'Invalid user name or password.';
+                        else
+                            this.error = 'Server error:\n' + resp.data.message;
+                    }
+                });
+            }
         }
     },
 
@@ -163,13 +245,14 @@ button:not(:first-child):active {
 
 label {
     display: block;
-    flex-basis: 6rem;
+    flex-basis: 8rem;
     flex-shrink: 0;
     flex-grow: 0;
 }
 
 .field input {
     flex: 1;
+    min-width: 50%;
 }
 
 @media screen and (max-width: 825px) {
@@ -192,10 +275,8 @@ label {
 }
 
 .msg-container .content {
-    white-space: pre;
+    white-space: pre-wrap;
 }
-
-
 
 .msg-container {
     margin-bottom: 0.5rem;
