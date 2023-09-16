@@ -326,11 +326,11 @@ export default {
         },
 
         pointer_x() {
-            return store.drawing.pixel.x * store.drawing.scale - (store.drawing.camera.x) * this.cam_x_absmax + 0.5;
+            return store.drawing.pixel.x * store.drawing.scale + 1;
         },
 
         pointer_y() {
-            return store.drawing.pixel.y * store.drawing.scale - (store.drawing.camera.y) * this.cam_y_absmax + 0.5;
+            return store.drawing.pixel.y * store.drawing.scale + 1;
         }
     }
 };
