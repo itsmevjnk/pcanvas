@@ -13,8 +13,7 @@
     "vue": "^3.3.4",
     "vue-cookies": "^1.8.3",
     "vue-global-events": "^3.0.0",
-    "vue-router": "^4.2.4",
-    "vue3-google-map": "^0.17.1"
+    "vue-router": "^4.2.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.1",
