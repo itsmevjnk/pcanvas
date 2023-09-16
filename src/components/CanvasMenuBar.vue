@@ -64,24 +64,28 @@ export default {
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
                 /* TODO: fix updating with != 100% zoom */
-                $('.menu').each(function() {
-                    let e = $(this);
+                let elements = document.getElementsByClassName('menu');
+                for(let e of elements) {
                     // console.log(e);
-                    let bar_item = $('[data-target="' + e.attr('id') + '"]').first();
+                    let bar_item = document.querySelector('[data-target="' + e.id + '"]');
                     // console.log(bar_item);
-                    let bar_item_pos = bar_item.offset();
-                    let left = 'calc(' + bar_item_pos.left + 'px - ' + (bar_item.is(':first-child') ? '0.1rem' : '0.3rem') + ')';
-                    e.css('left', left);
-                });
+                    let bar_item_pos = getComputedStyle(bar_item);
+                    e.style.left = 'calc(' + bar_item_pos.left + 'px - ' + ((bar_item == bar_item.parentNode.firstElementChild) ? '0.1rem' : '0.3rem') + ')';
+                }
             }
         };
     },
 
     mounted() {
         this.menu_handler();
-        $(window).resize(this.menu_handler);
-        $(window).click(this.click_handler);
+        window.addEventListener('resize', this.menu_handler);
+        window.addEventListener('click', this.click_handler);
         this.$emit('update:ui_test', this.ui_test);;
+    },
+
+    unmounted() {
+        window.removeEventListener('resize', this.menu_handler);
+        window.removeEventListener('click', this.click_handler);
     },
 
     methods: {
@@ -125,17 +129,17 @@ export default {
         
         /* functions for handling menu bar */
         activate_menu(id) {
-            $('.menu').each(function() {
-                let e = $(this);
-                if(e.attr('id') !== id) e.addClass('inactive');
-                else e.removeClass('inactive');
-            });
+            let menu_elements = document.getElementsByClassName('menu');
+            for(let e of menu_elements) {
+                if(e.id !== id) e.classList.add('inactive');
+                else e.classList.remove('inactive');
+            }
 
-            $('ul.categories li').each(function() {
-                let e = $(this);
-                if(e.attr('data-target') !== id) e.removeClass('active');
-                else e.addClass('active');
-            });
+            let cat_elements = document.querySelectorAll('ul.categories li');
+            for(let e of cat_elements) {
+                if(e.dataset.target !== id) e.classList.remove('active');
+                else e.classList.add('active');
+            }
         },
 
         update_menu() {
@@ -148,7 +152,7 @@ export default {
         
         /* window click handler */
         click_handler(e) {
-            if(this.opened_menu !== null && $(e.target).closest('.menu-bar').length === 0) {
+            if(this.opened_menu !== null && e.target.closest('.menu-bar') === null) {
                 this.opened_menu = null;
                 this.update_menu();
             }
