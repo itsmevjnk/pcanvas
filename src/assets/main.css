@@ -27,11 +27,7 @@ main {
 }
 
 p {
-    margin: 0;
-}
-
-p:not(:last-child) {
-    margin-bottom: 1rem;
+    margin: 0.5rem 0;
 }
 
 ol, ul {
