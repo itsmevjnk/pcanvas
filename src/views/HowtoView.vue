@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../info.js'
+import { store } from '../store.js'
 import TitleBar from '../components/TitleBar.vue'
 import { RouterLink } from 'vue-router'
 import { disable_ctx_menu_all } from '../utils.js'

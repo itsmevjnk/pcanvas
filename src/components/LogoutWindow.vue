@@ -2,7 +2,7 @@
 import Window from './Window.vue';
 import { disable_ctx_menu_all } from '../utils.js';
 import axios from 'axios';
-import { store } from '../info';
+import { store } from '../store.js';
 
 const props = defineProps({
     z_index: {

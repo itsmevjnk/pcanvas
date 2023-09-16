@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../info.js';
+import { store } from '../store.js';
 import { GlobalEvents } from 'vue-global-events';
 import {RouterLink} from 'vue-router';
 
