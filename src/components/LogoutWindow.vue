@@ -15,7 +15,7 @@ const emits = defineEmits(['cancel', 'done'])
 </script>
 
 <template>
-    <Window title="Log Out pCanvas" blocking="blocking-bg" :z_index="z_index_num" close="true">
+    <Window title="Log Out pCanvas" blocking="blocking-bg" :z_index="z_index_num" close="true" @close="$emit('cancel')">
         <div class="msg-container">
             <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/key.png">
             <div class="content">

@@ -232,13 +232,10 @@ export default {
 
         handle_ui_test_change(val) {
             this.ui_test = val;
-            if(!val) setTimeout(this.handle_ui_test_change_timeout, 1);
+            if(!val) setTimeout(this.handle_ui_test_change_timeout, 10);
         },
 
         handle_ui_test_change_timeout() {
-            while(document.getElementById('main-canvas') == 0) {
-                // wait
-            }
             this.handle_resize();
         },
 
