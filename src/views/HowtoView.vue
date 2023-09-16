@@ -18,6 +18,10 @@ import { disable_ctx_menu_all } from '../utils.js'
                     <li>Select your colour, and click Place to draw there.</li>
                     <li>Rinse and repeat!</li>
                 </ul>
+                Still unsure? Watch this video below:
+                <div>
+                    <iframe width="560" height="315" :src="'https://www.youtube.com/embed/' + store.tutorial_video" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
                 If you have any more questions regarding this app, you can contact its admin <a v-bind:href="'mailto:' + store.admin_email">here</a>.
             </div>
         </div>

@@ -38,5 +38,7 @@ export const store = reactive({
 
     admin_email: 's223145883@deakin.edu.au',
 
+    tutorial_video: '3Q9hGfqx32w', // must only contain video ID!
+
     api: 'http://localhost:8000'
 });
