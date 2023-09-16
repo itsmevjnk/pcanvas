@@ -72,8 +72,9 @@ export default {
                     // console.log(e);
                     let bar_item = document.querySelector('[data-target="' + e.id + '"]');
                     // console.log(bar_item);
-                    let bar_item_pos = getComputedStyle(bar_item);
-                    e.style.left = 'calc(' + bar_item_pos.left + 'px - ' + ((bar_item == bar_item.parentNode.firstElementChild) ? '0.1rem' : '0.3rem') + ')';
+                    let bar_item_pos = bar_item.getBoundingClientRect();
+                    // console.log('calc(' + bar_item_pos.left + 'px - ' + ((bar_item == bar_item.parentNode.firstElementChild) ? '0.1rem' : '0.3rem') + ')');
+                    e.style.setProperty('left', 'calc(' + bar_item_pos.left + 'px - ' + ((bar_item == bar_item.parentNode.firstElementChild) ? '0.1rem' : '0.3rem') + ')');
                 }
             }
         };
