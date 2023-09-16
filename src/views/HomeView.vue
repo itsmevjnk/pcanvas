@@ -23,17 +23,13 @@ import axios from 'axios'
             <div id="canvas-container">
                 <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
                     width: canvas_width + 'px',
-                    height: canvas_height + 'px',
-                    top: canvas_top + 'px',
-                    left: canvas_left + 'px'
+                    height: canvas_height + 'px'
                 }" class="no-ctx-menu" @mousedown.left = "handle_canvas_click"></canvas>
                 <CanvasPointer id="pointer" v-show="store.drawing.pixel.selected"
                     :width="store.drawing.scale + 'px'" :height="store.drawing.scale + 'px'"
                     :x="'calc(' + pointer_x + 'px - 0.3rem)'" :y="'calc(' + pointer_y + 'px - 0.3rem)'"/>
             </div>
-            <VertScrollBar v-model="store.drawing.camera.y" :scale="scroll_scale" :max="(cam_y_absmax == 0) ? 0 : 2"/>
         </div>
-        <HorizScrollBar v-model="store.drawing.camera.x" :scale="scroll_scale" :max="(cam_x_absmax == 0) ? 0 : 2"/>
     </main>
     <main v-show="ui_test">
         <div class="msg-container">
@@ -206,7 +202,7 @@ export default {
                             -   document.getElementsByTagName('header')[0].offsetHeight
                             -   document.getElementsByTagName('nav')[0].offsetHeight
                             -   document.getElementsByTagName('footer')[0].offsetHeight;
-            this.main_top_height = this.main_height - document.getElementsByClassName('hscroll-container')[0].offsetHeight;
+            this.main_top_height = this.main_height;
             
             setTimeout(this.handle_resize_timeout, 10); // give it some time to change
             // console.log(store.drawing.min_scale);
@@ -227,7 +223,7 @@ export default {
 
             // console.log(this.scroll_scale);
 
-            document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
+            // document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
         },
 
         handle_ui_test_change(val) {
@@ -356,7 +352,7 @@ canvas {
     position: relative;
     flex: 1;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .hscroll-container {
