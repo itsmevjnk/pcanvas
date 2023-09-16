@@ -62,11 +62,6 @@ export default {
         
         document.body.appendChild(gmaps_script_setup);
         document.body.appendChild(gmaps_script_incl);
-    },
-
-    unmounted() {
-        document.getElementById('gmaps-api-setup').remove();
-        document.getElementById('gmaps-api-incl').remove();
     }
 };
 </script>
