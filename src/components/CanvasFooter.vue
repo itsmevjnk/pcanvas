@@ -32,7 +32,7 @@ import {store} from '../info.js'
         <div class="status-container">
             <div class="status-item flex-60">
                 <template v-if="store.user.name == ''">Log in to start placing pixels...</template>
-                <template v-else-if="store.drawing.cooldown > 0">You can place another pixel in {{ Math.floor(store.drawing.cooldown / 60) }}:{{ store.drawing.cooldown % 60 }}.</template>
+                <template v-else-if="store.drawing.cooldown > 0">You can place another pixel in {{ String(Math.floor(store.drawing.cooldown / 60)).padStart(2, '0') }}:{{ String(store.drawing.cooldown % 60).padStart(2, '0') }}.</template>
                 <template v-else-if="!store.drawing.pixel.selected">Select a pixel to draw on...</template>
                 <template v-else>Select the colour, then click Place to draw.</template>
             </div>
