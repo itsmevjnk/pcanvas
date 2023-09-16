@@ -7,6 +7,7 @@ import { disable_ctx_menu_all } from '../utils.js'
 import {store} from '../info.js'
 import { watch } from 'vue'
 import axios from 'axios'
+import { socket } from '../socket.js'
 </script>
 
 <template>
@@ -157,6 +158,10 @@ export default {
                     window.addEventListener('resize', this.handle_resize);
                     this.handle_resize();
 
+                    /* set up WebSocket */
+                    socket.on('place', this.handle_ws_place);
+                    socket.emit('subscribe', store.canvas.id);
+
                     /* start canvas handling */
                     this.handle_canvas();
                 });
@@ -166,6 +171,8 @@ export default {
 
     unmounted() {
         window.removeEventListener('resize', this.handle_resize);
+        socket.emit('unsubscribe', store.canvas.id); // unsubscribe from canvas
+        socket.off('place', this.handle_ws_place);
     },
 
     methods: {
@@ -178,8 +185,6 @@ export default {
                 store.drawing.cooldown = resp.data.payload.timer;
                 store.drawing.pixel.selected = false;
                 // console.log(store.drawing);
-                this.canvas[store.drawing.pixel.y][store.drawing.pixel.x] = store.drawing.color; // TODO: listen to backend for changes (WebSocket?)
-                this.canvas_update.push([store.drawing.pixel.x, store.drawing.pixel.y]); // add to canvas updating queue
                 this.set_cooldown_timer();
             });
         },
@@ -193,6 +198,12 @@ export default {
                         this.cooldown_handler = null;
                     }
                 }, 1000);
+        },
+
+        handle_ws_place(payload) {
+            let x = payload.offset % store.canvas.width, y = Math.floor(payload.offset / store.canvas.width);
+            this.canvas[y][x] = payload.color;
+            this.canvas_update.push([x, y]);
         },
 
         handle_resize() {
