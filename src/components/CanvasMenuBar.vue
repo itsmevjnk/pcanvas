@@ -47,8 +47,8 @@ const emits = defineEmits(['update:ui_test', 'resize']);
             <li><a v-bind:href="'mailto:' + store.admin_email">Contact admin</a></li>
         </ul>
     </nav>
-    <LoginWindow @cancel="login_window = false" @done="login_window = false"  v-if="login_window"/>
-    <LogoutWindow @cancel="logout_window = false" @done="logout_window = false"  v-if="logout_window"/>
+    <LoginWindow @cancel="login_window = false" @done="logio_resize(); login_window = false;" v-if="login_window"/>
+    <LogoutWindow @cancel="logout_window = false" @done="logio_resize(); logout_window = false;" v-if="logout_window"/>
 </template>
 
 <script>
@@ -150,6 +150,14 @@ export default {
             if(this.opened_menu !== null && $(e.target).closest('.menu-bar').length === 0) {
                 this.opened_menu = null;
                 this.update_menu();
+            }
+        },
+
+        logio_resize() {
+            if(getComputedStyle(document.querySelector('.actions')).flexDirection == 'column') {
+                setInterval(() => {
+                    this.$emit('resize');
+                }, 10); // allow some time for the UI to update before requesting resize
             }
         }
     }
