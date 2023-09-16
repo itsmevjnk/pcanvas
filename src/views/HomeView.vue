@@ -5,9 +5,11 @@ import CanvasFooter from '../components/CanvasFooter.vue'
 import CanvasPointer from '../components/CanvasPointer.vue'
 import { disable_ctx_menu_all } from '../utils.js'
 import {store} from '../info.js'
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import axios from 'axios'
 import { socket } from '../socket.js'
+
+const canvas_container = ref(null);
 </script>
 
 <template>
@@ -19,7 +21,7 @@ import { socket } from '../socket.js'
         <div style="display: flex; flex-direction: row;" :style="{
             height: 'calc(' + main_height + 'px - 0.1rem)'
         }">
-            <div id="canvas-container">
+            <div id="canvas-container" ref="canvas_container">
                 <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
                     width: canvas_width + 'px',
                     height: canvas_height + 'px'
@@ -45,12 +47,6 @@ import { socket } from '../socket.js'
 
             <div>
                 Selected colour: {{ store.drawing.color }} (<span v-bind:class="'text-' + store.drawing.color">colour test</span>)
-            </div>
-            
-            <div>
-                Camera centre point:
-                X = <input type="number" min="0" max="2" v-model="store.drawing.camera.x">
-                Y = <input type="number" min="0" max="2" v-model="store.drawing.camera.y">
             </div>
 
             <div>
@@ -83,10 +79,6 @@ export default {
             main_height: 0,
             main_top_height: 0,
             canvas: null,
-            canvas_container_dimensions: {
-                width: NaN,
-                height: NaN
-            },
             canvas_update: [], // list of pixels to be updated
             canvas_redraw: true, // set to indicate that the canvas needs to be redrawn
             ui_test: false,
@@ -158,6 +150,12 @@ export default {
                     window.addEventListener('resize', this.handle_resize);
                     this.handle_resize();
 
+                    /* set up zoom scale watch - must be done AFTER minimum scale calculation */
+                    watch(
+                        () => store.drawing.scale,
+                        this.handle_scale_change
+                    );
+
                     /* set up WebSocket */
                     socket.on('place', this.handle_ws_place);
                     socket.emit('subscribe', store.canvas.id);
@@ -222,11 +220,8 @@ export default {
                 // console.log(getComputedStyle(main_elem).maxHeight + ', expected ' + this.main_height);
             }
 
-            let e = document.getElementById('canvas-container');
-            this.canvas_container_dimensions.width = e.offsetWidth;
-            this.canvas_container_dimensions.height = e.offsetHeight;
-            
-            store.drawing.scale_min = Math.ceil(Math.max(store.drawing.scale_min_min, this.canvas_container_dimensions.width / store.canvas.width, this.canvas_container_dimensions.height / store.canvas.height));
+            let e = this.$refs.canvas_container;        
+            store.drawing.scale_min = Math.ceil(Math.max(store.drawing.scale_min_min, e.clientWidth / store.canvas.width, e.clientHeight / store.canvas.height));
             if(store.drawing.scale < store.drawing.scale_min) store.drawing.scale = store.drawing.scale_min;
 
             // console.log(this.scroll_scale);
@@ -300,14 +295,34 @@ export default {
             // this.place_pixel();
             // store.drawing.pixel.selected = true;
             // console.log([this.pointer_x, this.pointer_y]);
+        },
+
+        handle_scale_change(new_scale, old_scale) {
+            // console.log(new_scale, old_scale);
+            
+            /* calculate camera center point location (pixel) */
+            let container = this.$refs.canvas_container;
+            let center_x = (container.scrollLeft + container.clientWidth / 2) / old_scale;
+            let center_y = (container.scrollTop + container.clientHeight / 2) / old_scale;
+            // console.log(center_x, center_y);
+
+            /* work back to expected camera position under new scale */
+            let scroll_x = center_x * new_scale - container.clientWidth / 2;
+            let scroll_y = center_y * new_scale - container.clientHeight / 2;
+
+            /* perform bounds checking */
+            if(scroll_x < 0) scroll_x = 0;
+            else if(scroll_x > this.canvas_width - container.clientWidth) scroll_x = this.canvas_width - container.clientWidth;
+            if(scroll_y < 0) scroll_y = 0;
+            else if(scroll_y > this.canvas_height - container.clientHeight) scroll_y = this.canvas_height - container.clientHeight;
+
+            /* set new scroll position */
+            container.scrollLeft = scroll_x;
+            container.scrollTop = scroll_y;
         }
     },
 
     computed: {
-        scroll_scale() {
-            return Math.min((50 * store.drawing.scale / store.drawing.scale_max), 90) + '%';
-        },
-
         canvas_width() {
             return (store.canvas.width * store.drawing.scale);
         },
@@ -315,25 +330,7 @@ export default {
         canvas_height() {
             return (store.canvas.height * store.drawing.scale);
         },
-
-        canvas_left() {
-            return ((this.canvas_container_dimensions.width - this.canvas_width) / 2 - (store.drawing.camera.x - 1) * this.cam_x_absmax);
-        },
-
-        canvas_top() {
-            return ((this.canvas_container_dimensions.height - this.canvas_height) / 2 - (store.drawing.camera.y - 1) * this.cam_y_absmax);
-        },
-
-        cam_x_absmax() {
-            let m = (this.canvas_width - this.canvas_container_dimensions.width) / 2;
-            return (m < 0) ? -m : m;
-        },
-
-        cam_y_absmax() {
-            let m = (this.canvas_height - this.canvas_container_dimensions.height) / 2;
-            return (m < 0) ? -m : m;
-        },
-
+        
         pointer_x() {
             return store.drawing.pixel.x * store.drawing.scale + 1;
         },
