@@ -142,7 +142,8 @@ export default {
             if(this.opened_menu === null) this.activate_menu(''); // will not match any menu --> disable all menu
             else this.activate_menu(this.opened_menu.dataset.target);
 
-            if(getComputedStyle(document.querySelector('.menu-bar .menu')).position != 'absolute') this.$emit('resize'); // notify HomeView to take action and resize <main>
+            let e = document.querySelector('.menu-bar .menu');
+            if(e !== null && getComputedStyle(e).position != 'absolute') this.$emit('resize'); // notify HomeView to take action and resize <main>
         },
         
         /* window click handler */

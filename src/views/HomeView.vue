@@ -247,6 +247,7 @@ export default {
             if(!store.ui_test) {
                 /* get the classes we need */
                 let canvas = document.getElementById('canvas');
+                if(canvas === null) return; // nothing else to do, now that the canvas is gone
                 let ctx = canvas.getContext('2d');
                 
                 if(this.canvas_redraw) {
