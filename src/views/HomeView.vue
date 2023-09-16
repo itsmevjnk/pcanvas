@@ -13,7 +13,7 @@ const canvas_container = ref(null);
 </script>
 
 <template>
-    <TitleBar title="pCanvas"/>
+    <TitleBar :title="((store.canvas.name == '') ? '' : (store.canvas.name + ' - ')) + 'pCanvas'"/>
     <CanvasMenuBar @update:ui_test="handle_ui_test_change" @resize="handle_resize" @center_camera="center_camera = true"/>
     <main id="main-canvas" v-show="!ui_test" :style="{
         'max-height': main_height + 'px'
