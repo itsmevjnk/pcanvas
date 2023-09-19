@@ -201,6 +201,7 @@ export default {
 
         handle_ws_place(payload) {
             let x = payload.offset % store.canvas.width, y = Math.floor(payload.offset / store.canvas.width);
+            // console.log('WS place event @', x, y);
             this.canvas[y][x] = payload.color;
             this.canvas_update.push([x, y]);
         },
@@ -240,10 +241,14 @@ export default {
         },
 
         handle_canvas() {
+            // console.log('handle canvas');
             if(!store.ui_test) {
                 /* get the classes we need */
                 let canvas = document.getElementById('canvas');
-                if(canvas === null) return; // nothing else to do, now that the canvas is gone
+                if(canvas === null) {
+                    requestAnimationFrame(this.handle_canvas); // there is nothing to do, but we still need to keep this running
+                    return;
+                }
                 let ctx = canvas.getContext('2d');
                 
                 if(this.canvas_redraw) {

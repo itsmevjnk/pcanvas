@@ -41,9 +41,9 @@ const emits = defineEmits(['update:ui_test', 'resize', 'center_camera']);
             </li>
         </ul>
         <ul id="menu-help" class="menu inactive">
-            <li><RouterLink to="howto">How to play</RouterLink></li>
+            <li><RouterLink to="howto" @click="close_menu">How to play</RouterLink></li>
             <li><a href="#">What's new</a></li>
-            <li><RouterLink to="about">About</RouterLink></li>
+            <li><RouterLink to="about" @click="close_menu">About</RouterLink></li>
             <li class="separator"></li>
             <li><a v-bind:href="'mailto:' + store.admin_email">Contact admin</a></li>
         </ul>
