@@ -21,7 +21,7 @@ disable_ctx_menu_all_onmount();
                     <li>Rinse and repeat!</li>
                 </ul>
                 Still unsure? Watch this video below:
-                <div>
+                <div class="video-wrapper widescreen">
                     <iframe width="560" height="315" :src="'https://www.youtube.com/embed/' + store.tutorial_video" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
                 If you have any more questions regarding this app, you can contact its admin <a v-bind:href="'mailto:' + store.admin_email">here</a>.
@@ -46,4 +46,23 @@ footer, main {
     justify-content: center;
     padding: 1rem 0;
 }
+
+.video-wrapper {
+    position: relative;
+    height: 0;
+    margin: 0.25rem 0;
+}
+
+.video-wrapper.widescreen {
+    padding-bottom: 56.25%;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 </style>
