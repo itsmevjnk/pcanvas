@@ -224,7 +224,7 @@ export default {
 
         handle_resize_timeout() {
             let main_elem = document.getElementById('main-canvas');
-            while(parseFloat(getComputedStyle(main_elem).maxHeight) != this.main_height) {
+            while(Math.round(parseFloat(getComputedStyle(main_elem).maxHeight)) != Math.round(this.main_height)) {
                 // console.log(getComputedStyle(main_elem).maxHeight + ', expected ' + this.main_height);
             }
 
