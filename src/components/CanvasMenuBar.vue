@@ -18,14 +18,14 @@ const emits = defineEmits(['update:ui_test', 'resize', 'center_camera']);
             <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-view">View</li>
             <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-help">Help</li>
         </ul>
-        <ul id="menu-file" class="menu inactive">
+        <ul id="menu-file" class="menu wipe-down inactive">
             <li>
                 <a @click="login_window = true; close_menu();" v-if="store.user.name == ''">Log in/Register</a>
                 <a @click="logout_window = true; close_menu();" v-else>Log out</a>
             </li>
             <li><a href="#">Download canvas</a></li>
         </ul>
-        <ul id="menu-view" class="menu inactive">
+        <ul id="menu-view" class="menu wipe-down inactive">
             <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
             <li><a :class="{ disabled: store.drawing.scale <= store.drawing.scale_min }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
@@ -40,7 +40,7 @@ const emits = defineEmits(['update:ui_test', 'resize', 'center_camera']);
                 </a>
             </li>
         </ul>
-        <ul id="menu-help" class="menu inactive">
+        <ul id="menu-help" class="menu wipe-down inactive">
             <li><RouterLink to="howto" @click="close_menu">How to play</RouterLink></li>
             <li><a href="#">What's new</a></li>
             <li><RouterLink to="about" @click="close_menu">About</RouterLink></li>
@@ -183,6 +183,10 @@ export default {
 
         .menu {
             position: unset !important;
+        }
+
+        .wipe-down {
+            animation: none !important;
         }
     }
 
