@@ -1,6 +1,6 @@
 <script setup>
 import Window from './Window.vue';
-import { disable_ctx_menu_all } from '../utils.js';
+import { disable_ctx_menu_all_onmount, refresh_autofocus_onmount } from '../utils.js';
 import axios from 'axios';
 import { store } from '../store.js';
 
@@ -11,7 +11,10 @@ const props = defineProps({
     }
 });
 
-const emits = defineEmits(['cancel', 'done'])
+const emits = defineEmits(['cancel', 'done']);
+
+disable_ctx_menu_all_onmount();
+refresh_autofocus_onmount();
 </script>
 
 <template>
@@ -48,7 +51,7 @@ const emits = defineEmits(['cancel', 'done'])
                 </div>
             </div>
             <div class="buttons">
-                <button @click="submit" :disabled="input_disable">OK</button>
+                <button @click="submit" :disabled="input_disable" autofocus>OK</button>
                 <button @click="$emit('cancel')" :disabled="input_disable">Cancel</button>
                 <button @click="register = true; email = ''; password_confirm = '';" :disabled="input_disable" v-if="!register">Register</button>
                 <button @click="register = false;" :disabled="input_disable" v-else>Log in</button>
@@ -105,10 +108,6 @@ export default {
             password_confirm: '',
             register_success: false
         };
-    },
-
-    mounted() {
-        disable_ctx_menu_all();
     },
 
     methods: {

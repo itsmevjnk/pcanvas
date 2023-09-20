@@ -2,7 +2,9 @@
 import { store } from '../store.js'
 import TitleBar from '../components/TitleBar.vue'
 import { RouterLink } from 'vue-router'
-import { disable_ctx_menu_all } from '../utils.js'
+import { disable_ctx_menu_all_onmount } from '../utils.js'
+
+disable_ctx_menu_all_onmount();
 </script>
 
 <template>
@@ -27,15 +29,12 @@ import { disable_ctx_menu_all } from '../utils.js'
         </div>
     </main>
     <footer>
-        <RouterLink to="/" class="button">OK</RouterLink>
+        <RouterLink to="/" class="button" autofocus>OK</RouterLink>
     </footer>
 </template>
 
 <script>
 export default {
-    mounted() {
-        disable_ctx_menu_all();
-    }
 }
 </script>
 

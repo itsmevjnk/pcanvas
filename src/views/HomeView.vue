@@ -3,13 +3,15 @@ import TitleBar from '../components/TitleBar.vue'
 import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
 import CanvasPointer from '../components/CanvasPointer.vue'
-import { disable_ctx_menu_all } from '../utils.js'
+import { disable_ctx_menu_all_onmount } from '../utils.js'
 import {store} from '../store.js'
 import { ref, watch } from 'vue'
 import axios from 'axios'
 import { socket } from '../socket.js'
 
 const canvas_container = ref(null);
+
+disable_ctx_menu_all_onmount();
 </script>
 
 <template>
@@ -104,8 +106,6 @@ export default {
                             0xFF800000, 0xFF800080, 0xFF808000, 0xFF808080,
                             0xFFC0C0C0, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF,
                             0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF];
-        
-        disable_ctx_menu_all(); // disable context menu for canvas
 
         /* fetch user status */
         axios.get(store.api + '/auth/query', { withCredentials: true }).then((resp) => {

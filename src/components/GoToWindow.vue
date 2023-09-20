@@ -1,6 +1,6 @@
 <script setup>
 import Window from './Window.vue';
-import { disable_ctx_menu_all } from '../utils.js';
+import { disable_ctx_menu_all_onmount } from '../utils.js';
 import axios from 'axios';
 import { store } from '../store.js';
 
@@ -12,6 +12,8 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['cancel', 'done'])
+
+disable_ctx_menu_all_onmount();
 </script>
 
 <template>
@@ -49,10 +51,6 @@ export default {
             x: store.drawing.pixel.x,
             y: store.drawing.pixel.y
         };
-    },
-
-    mounted() {
-        disable_ctx_menu_all();
     },
 
     methods: {

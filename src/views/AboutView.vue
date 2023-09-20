@@ -1,9 +1,11 @@
 <script setup>
 import TitleBar from '../components/TitleBar.vue'
 import { RouterLink } from 'vue-router'
-import { disable_ctx_menu_all } from '../utils.js'
+import { disable_ctx_menu_all_onmount } from '../utils.js'
 
 import { maps } from '../maps.js'
+
+disable_ctx_menu_all_onmount()
 </script>
 
 <template>
@@ -28,15 +30,13 @@ import { maps } from '../maps.js'
         </div>
     </main>
     <footer>
-        <RouterLink to="/" class="button">OK</RouterLink>
+        <RouterLink to="/" class="button" autofocus>OK</RouterLink>
     </footer>
 </template>
 
 <script>
 export default {
     mounted() {
-        disable_ctx_menu_all();
-
         let gmaps_script_setup = document.createElement('script');
         gmaps_script_setup.innerHTML =  "function map_setup(){" + // NOTE: very hacky!
                                         "var center=new google.maps.LatLng(" + maps.center.lat + "," + maps.center.lng + ");" +

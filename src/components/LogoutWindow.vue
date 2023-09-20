@@ -1,6 +1,6 @@
 <script setup>
 import Window from './Window.vue';
-import { disable_ctx_menu_all } from '../utils.js';
+import { disable_ctx_menu_all_onmount, refresh_autofocus_onmount } from '../utils.js';
 import axios from 'axios';
 import { store } from '../store.js';
 
@@ -11,7 +11,10 @@ const props = defineProps({
     }
 });
 
-const emits = defineEmits(['cancel', 'done'])
+const emits = defineEmits(['cancel', 'done']);
+
+disable_ctx_menu_all_onmount();
+refresh_autofocus_onmount();
 </script>
 
 <template>
@@ -24,7 +27,7 @@ const emits = defineEmits(['cancel', 'done'])
         </div>
         <div class="button-group">
             <button @click="logout">Yes</button>
-            <button @click="$emit('cancel')">No</button>
+            <button @click="$emit('cancel')" autofocus>No</button>
         </div>
     </Window>
 </template>
@@ -37,10 +40,6 @@ export default {
         return {
 
         };
-    },
-
-    mounted() {
-        disable_ctx_menu_all();
     },
 
     methods: {
