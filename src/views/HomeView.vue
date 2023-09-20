@@ -86,7 +86,13 @@ export default {
             ui_test: false,
             center_camera: false, // will be picked up by canvas handler
             cooldown_handler: null,
-            palette: [] // color palette - will be filled in by mounted()
+            palette: [], // color palette - will be filled in by mounted()
+            palette_hexstr: [ // color palette as hex colour strings - used for fillStyle
+                '#000000', '#800000', '#008000', '#808000',
+                '#000080', '#800080', '#008080', '#808080',
+                '#c0c0c0', '#ff0000', '#00ff00', '#ffff00',
+                '#0000ff', '#ff00ff', '#00ffff', '#ffffff'
+            ]
         };
     },
 
@@ -269,21 +275,12 @@ export default {
 
                 if(this.canvas_update.length > 0) {
                     // console.log(this.canvas_update);
-                    /* update some pixels */
-                    let img_data = ctx.getImageData(0, 0, store.canvas.width, store.canvas.height); // retrieve image data from canvas
-                    let img_data_u32 = new Uint32Array(img_data.data.buffer);
-
-                    for(let i = 0; i < this.canvas_update.length; i++) {
-                        let x = this.canvas_update[i][0], y = this.canvas_update[i][1];
-                        // console.log(x);
-                        // console.log(y)
-                        img_data_u32[y * store.canvas.width + x] = this.palette[this.canvas[y][x]]; // 0 - x, 1 - y
+                    /* update some pixels - we'll use fillRect */
+                    while(this.canvas_update.length > 0) {
+                        let [x, y] = this.canvas_update.pop();
+                        ctx.fillStyle = this.palette_hexstr[this.canvas[y][x]];
+                        ctx.fillRect(x, y, 1, 1);
                     }
-                    this.canvas_update = [];
-
-                    createImageBitmap(img_data).then((img_bitmap) => {
-                        ctx.drawImage(img_bitmap, 0, 0);
-                    });
                 }
 
                 /* center camera to selected pixel if requested */
