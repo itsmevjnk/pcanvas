@@ -136,6 +136,10 @@ export default {
             store.canvas.name = ls_resp.data.payload[0].name;
             
             this.canvas = Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15));
+            
+            /* listen to window resize event to capture changes in canvas container size */
+            window.addEventListener('resize', this.handle_resize);
+            this.handle_resize();
 
             axios.get(store.api + '/canvas/' + store.canvas.id + '/fetch').then((f_resp) => {
                 /* populate pixels */
@@ -153,10 +157,6 @@ export default {
                 }).catch((err) => {
                     // TODO: do something?
                 }).finally(() => {
-                    /* listen to window resize event to capture changes in canvas container size */
-                    window.addEventListener('resize', this.handle_resize);
-                    this.handle_resize();
-
                     /* set up zoom scale watch - must be done AFTER minimum scale calculation */
                     watch(
                         () => store.drawing.scale,
