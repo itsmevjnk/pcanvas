@@ -90,8 +90,8 @@ export default {
             // console.log(this.opened_menu);
             // console.log(event.target);
             if(this.opened_menu == event.target) {
-                // console.log(Date.now() - this.t_hover);
-                if(this.t_hover == null || Date.now() - this.t_hover > 5) this.opened_menu = null;
+                console.log(Date.now() - this.t_hover);
+                if(this.t_hover == null || Date.now() - this.t_hover > 25) this.opened_menu = null;
             }
             else this.opened_menu = event.target;
             this.update_menu();
