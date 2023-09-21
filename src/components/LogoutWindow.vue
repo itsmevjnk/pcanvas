@@ -34,7 +34,7 @@ refresh_autofocus_onmount();
 
 <script>
 export default {
-    name: 'LoginWindow',
+    name: 'LogoutWindow',
 
     data() {
         return {
