@@ -1,11 +1,13 @@
 <script setup>
 import { store } from '../store.js'
 import TitleBar from '../components/TitleBar.vue'
+import GenericMenuBar from '../components/GenericMenuBar.vue'
 import { RouterLink } from 'vue-router'
 </script>
 
 <template>
     <TitleBar title="How to pCanvas"/>
+    <GenericMenuBar/>
     <main>
         <div class="msg-container">
             <img class="icon pixel" src="../assets/ui/icons/info.png" v-no-ctx-menu>
