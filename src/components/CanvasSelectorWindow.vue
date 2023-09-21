@@ -65,6 +65,7 @@ export default {
                     store.canvas.width = this.canvases[i].width;
                     store.canvas.height = this.canvases[i].height;
                     store.canvas.readonly = this.canvases[i].readonly;
+                    this.$cookies.set('canvas', store.canvas.id);
                     break;
                 }
             }

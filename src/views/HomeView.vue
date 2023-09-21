@@ -172,28 +172,18 @@ export default {
         });
 
         /* fetch canvas */
-        axios.get(store.api + '/canvas/list?limit=1').then((ls_resp) => {
-            store.canvas.width = ls_resp.data.payload[0].width;
-            store.canvas.height = ls_resp.data.payload[0].height;
-            store.canvas.id = ls_resp.data.payload[0].id;
-            store.canvas.name = ls_resp.data.payload[0].name;
-            store.canvas.readonly = ls_resp.data.payload[0].readonly;
-
-            /* set up zoom scale watch */
-            watch(
-                () => store.drawing.scale,
-                this.handle_scale_change
-            );
-            
-            /* listen to window resize event to capture changes in canvas container size */
-            window.addEventListener('resize', this.handle_resize);
-            this.handle_resize();
-
-            /* start canvas handling */
-            this.handle_canvas();
-
-            load_canvas();
-        });
+        if(this.$cookies.isKey('canvas')) {
+            /* canvas ID already exists in cookies - fetch that one */
+            axios.get(store.api + '/canvas/info', {withCredentials: true}).then((resp) => {
+                this.init_canvas(resp.data.payload);                
+            });
+        } else {
+            /* grab latest canvas ID and information */
+            axios.get(store.api + '/canvas/list?limit=1').then((ls_resp) => {
+                this.$cookies.set('canvas', ls_resp.data.payload[0].id);
+                this.init_canvas(ls_resp.data.payload[0]);
+            });
+        }
     },
 
     unmounted() {
@@ -369,6 +359,29 @@ export default {
                 }, 10); // allow some time for the UI to update before requesting resize
             }
         },
+
+        init_canvas(payload) {
+            store.canvas.width = payload.width;
+            store.canvas.height = payload.height;
+            store.canvas.id = payload.id;
+            store.canvas.name = payload.name;
+            store.canvas.readonly = payload.readonly;
+
+            /* set up zoom scale watch */
+            watch(
+                () => store.drawing.scale,
+                this.handle_scale_change
+            );
+            
+            /* listen to window resize event to capture changes in canvas container size */
+            window.addEventListener('resize', this.handle_resize);
+            this.handle_resize();
+
+            /* start canvas handling */
+            this.handle_canvas();
+
+            load_canvas();
+        }
     },
 
     computed: {
