@@ -35,6 +35,8 @@ export default {
         return {
             opened_menu: null,
 
+            t_hover: null,
+
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
                 /* TODO: fix updating with != 100% zoom */
@@ -85,14 +87,22 @@ export default {
         },
         
         toggle_menu(event) {
-            if(this.opened_menu === null) this.opened_menu = event.target;
-            else this.opened_menu = null;
+            // console.log(this.opened_menu);
+            // console.log(event.target);
+            if(this.opened_menu == event.target) {
+                // console.log(Date.now() - this.t_hover);
+                if(this.t_hover == null || Date.now() - this.t_hover > 5) this.opened_menu = null;
+            }
+            else this.opened_menu = event.target;
             this.update_menu();
         },
 
         hover_menu(event) {
             if(this.opened_menu !== null && this.opened_menu !== event.target) {
                 this.opened_menu = event.target;
+
+                this.t_hover = Date.now(); // for debouncing as on mobile this event may be followed immediately by a click event
+
                 this.update_menu();
             }
         },
