@@ -8,7 +8,7 @@ const props = defineProps({
 <template>
     <header class="title-bar">
         <div class="icon-title">
-            <img src="/favicon.ico" class="icon">
+            <img src="/favicon.ico" class="icon" v-no-ctx-menu>
             <h1>{{ props.title }}</h1>
         </div>
         <RouterLink to="howto" class="button mini"><b>?</b></RouterLink>
