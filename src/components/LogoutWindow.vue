@@ -65,4 +65,14 @@ export default {
 .button-group {
     margin-bottom: 1rem;
 }
+.icon {
+    min-width: min(4rem, 15vw) !important;
+    height: auto;
+}
+
+@media screen and (max-width: 825px) {
+    .icon {
+        max-width: 15vw;
+    }
+}
 </style>

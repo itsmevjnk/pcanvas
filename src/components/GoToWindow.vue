@@ -21,14 +21,14 @@ const emits = defineEmits(['cancel', 'done'])
                 Type a canvas pixel coordinate, and pCanvas will take you there.
             </div>
         </div>
-        <div class="msg-container" style="align-items: center;">
-            <span>Go to:</span>
+        <div class="msg-container fields">
+            <span>Go&nbsp;to:</span>
             <div class="field">
-                <label for="x">X =</label>
+                <label for="x">X&nbsp;=</label>
                 <input type="number" min="0" :max="store.canvas.width - 1" step="1" v-model="x" name="x">
             </div>
             <div class="field">
-                <label for="y">Y =</label>
+                <label for="y">Y&nbsp;=</label>
                 <input type="number" min="0" :max="store.canvas.height - 1" step="1" v-model="y" name="y">
             </div>
         </div>
@@ -69,7 +69,7 @@ export default {
 
 <style scoped>
 :deep(.window) {
-    max-width: 30rem;
+    max-width: min(30rem, 80vw);
 }
 .button-group {
     margin-bottom: 1rem;
@@ -89,5 +89,25 @@ export default {
 
 .field label {
     margin-right: 0.25rem;
+}
+
+.icon {
+    min-width: min(4rem, 15vw) !important;
+    height: auto;
+}
+
+.fields {
+    align-items: center;
+}
+
+@media screen and (max-width: 825px) {
+    .icon {
+        max-width: 15vw;
+    }
+
+    .msg-container {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
 }
 </style>

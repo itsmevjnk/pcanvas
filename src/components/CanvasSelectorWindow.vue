@@ -96,7 +96,7 @@ export default {
 
 <style scoped>
 :deep(.window) {
-    max-width: 30rem;
+    max-width: min(30rem, 80vw);
 }
 .button-group {
     margin-bottom: 1rem;
@@ -121,5 +121,36 @@ export default {
 .select-container {
     width: unset;
     flex: 1;
+}
+
+.field {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 0.25rem;
+}
+
+.field label {
+    margin-right: 0.25rem;
+}
+
+.icon {
+    min-width: min(4rem, 15vw) !important;
+    height: auto;
+}
+
+.fields {
+    align-items: center;
+}
+
+@media screen and (max-width: 825px) {
+    .icon {
+        max-width: 15vw;
+    }
+
+    .msg-container {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
 }
 </style>

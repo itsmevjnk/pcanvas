@@ -17,13 +17,13 @@ const emits = defineEmits(['cancel', 'done']);
     <Window :title="(register) ? 'Register' : 'Log in'" moveable="false" :z_index="z_index_num">
         <div class="outer">
             <div class="prompt">
-                <div class="row">
+                <div class="row title">
                     <img src="../assets/ui/icons/network.png" class="icon pixel" v-no-ctx-menu/>
                     <div class="prompt-text">
                         Enter your user name and password to start drawing.
                     </div>
                 </div>
-                <div class="row">
+                <div class="row fields">
                     <img src="../assets/ui/icons/network.png" class="icon pixel invisible"/>
                     <div class="prompt-text">
                         <div class="field">
@@ -192,6 +192,7 @@ export default {
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
+    max-width: calc(80vw - 3rem);
 }
 
 .prompt-text {
@@ -214,7 +215,7 @@ export default {
 
 .icon {
     flex: 0;
-    min-width: 4rem;
+    min-width: min(4rem, 15vw) !important;
     height: auto;
 }
 
@@ -266,6 +267,29 @@ label {
     .outer {
         flex-direction: column;
         align-items: center;
+        padding: 1rem 1rem;
+    }
+
+    .icon {
+        max-width: 15vw;
+    }
+
+    .prompt-text {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .invisible {
+        display: none;
+    }
+
+    .row.fields .prompt-text {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .field {
+        flex-wrap: wrap;
     }
 }
 
