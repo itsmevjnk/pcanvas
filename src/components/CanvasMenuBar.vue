@@ -7,7 +7,7 @@ import LoginWindow from './LoginWindow.vue';
 import LogoutWindow from './LogoutWindow.vue';
 import GoToWindow from './GoToWindow.vue';
 
-const emits = defineEmits(['update:ui_test', 'resize', 'center_camera']);
+const emits = defineEmits(['resize', 'center_camera']);
 </script>
 
 <template>
@@ -29,16 +29,9 @@ const emits = defineEmits(['update:ui_test', 'resize', 'center_camera']);
             <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
             <li><a :class="{ disabled: store.drawing.scale <= store.drawing.scale_min }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
-            <li><a href="#" @click="goto_window = true; close_menu();" :class="{disabled: ui_test}">Go to...</a></li>
+            <li><a href="#" @click="goto_window = true; close_menu();">Go to...</a></li>
             <li class="separator"></li>
             <li><a href="#">Past canvases</a></li>
-            <li class="separator"></li>
-            <li>
-                <a @click="toggle_ui_test">
-                    <template v-if="!ui_test">Toggle UI testing mode</template>
-                    <template v-else>Enter drawing mode</template>
-                </a>
-            </li>
         </ul>
         <ul id="menu-help" class="menu wipe-down inactive">
             <li><RouterLink to="howto" @click="close_menu">How to play</RouterLink></li>
@@ -62,7 +55,6 @@ export default {
             login_window: false,
             logout_window: false,
             goto_window: false,
-            ui_test: false,
 
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
@@ -84,7 +76,6 @@ export default {
         this.menu_handler();
         window.addEventListener('resize', this.menu_handler);
         window.addEventListener('click', this.click_handler);
-        this.$emit('update:ui_test', this.ui_test);;
     },
 
     unmounted() {
@@ -123,12 +114,6 @@ export default {
                 store.drawing.scale--;
                 this.close_menu();
             }
-        },
-
-        toggle_ui_test() {
-            this.ui_test = !this.ui_test;
-            this.$emit('update:ui_test', this.ui_test);
-            this.close_menu();
         },
         
         /* functions for handling menu bar */

@@ -16,8 +16,8 @@ disable_ctx_menu_all_onmount();
 
 <template>
     <TitleBar :title="((store.canvas.name == '') ? '' : (store.canvas.name + ' - ')) + 'pCanvas'"/>
-    <CanvasMenuBar @update:ui_test="handle_ui_test_change" @resize="handle_resize" @center_camera="center_camera = true"/>
-    <main id="main-canvas" v-show="!ui_test" :style="{
+    <CanvasMenuBar @resize="handle_resize" @center_camera="center_camera = true"/>
+    <main id="main-canvas" :style="{
         'max-height': main_height + 'px'
     }">
         <div style="display: flex; flex-direction: row;" :style="{
@@ -34,42 +34,6 @@ disable_ctx_menu_all_onmount();
             </div>
         </div>
     </main>
-    <main v-show="ui_test">
-        <div class="msg-container">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/warning.png"/>
-            <div class="content">
-                There is (almost) nothing yet at this point, just a few controls here and there.<br>
-                In the meantime, here are some stuff for UI testing:
-            </div>
-        </div>
-        <div style="margin: 0 2rem;">
-            <div>
-                Canvas scale: {{ store.drawing.scale }}
-            </div>
-
-            <div>
-                Selected colour: {{ store.drawing.color }} (<span v-bind:class="'text-' + store.drawing.color">colour test</span>)
-            </div>
-
-            <div>
-                <input type="checkbox" v-model="store.drawing.pixel.selected"> Pixel selected
-            </div>
-
-            <div v-show="store.drawing.pixel.selected">
-                Selected pixel coordinates: 
-                X = <input type="number" min="0" v-bind:max="store.canvas.width - 1" v-model="store.drawing.pixel.x">
-                Y = <input type="number" min="0" v-bind:max="store.canvas.height - 1" v-model="store.drawing.pixel.y">
-            </div>
-
-            <div v-show="store.drawing.pixel.selected">
-                <input type="checkbox" v-model="store.drawing.cooldown"> Drawing cooldown triggered
-            </div>
-
-            <div>
-                Logged in user name: <input type="text" v-model="store.user.name">
-            </div>
-        </div>
-    </main>
     <CanvasFooter @place="place_pixel"/>
 </template>
 
@@ -83,7 +47,6 @@ export default {
             canvas: null,
             canvas_update: [], // list of pixels to be updated
             canvas_redraw: true, // set to indicate that the canvas needs to be redrawn
-            ui_test: false,
             center_camera: false, // will be picked up by canvas handler
             cooldown_handler: null,
             palette: [], // color palette - will be filled in by mounted()
@@ -237,24 +200,11 @@ export default {
             // document.getElementsByClassName('hscroll-container')[0].style.paddingRight = (document.getElementsByClassName('vscroll-container')[0].offsetWidth - 2) + 'px';
         },
 
-        handle_ui_test_change(val) {
-            this.ui_test = val;
-            if(!val) setTimeout(this.handle_ui_test_change_timeout, 10);
-        },
-
-        handle_ui_test_change_timeout() {
-            this.handle_resize();
-        },
-
         handle_canvas() {
             // console.log('handle canvas');
-            if(!store.ui_test) {
-                /* get the classes we need */
-                let canvas = document.getElementById('canvas');
-                if(canvas === null) {
-                    requestAnimationFrame(this.handle_canvas); // there is nothing to do, but we still need to keep this running
-                    return;
-                }
+            /* get the classes we need */
+            let canvas = document.getElementById('canvas');
+            if(canvas !== null) {
                 let ctx = canvas.getContext('2d');
                 
                 if(this.canvas_redraw) {
