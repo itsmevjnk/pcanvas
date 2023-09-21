@@ -36,6 +36,12 @@ export const store = reactive({
         min_pw_length: 8
     },
 
+    footer: {
+        text: '\u00A9 2023 Thanh Vinh Nguyen. Written for the SIT120 unit.',
+        github: 'https://github.com/itsmevjnk/pcanvas',
+        email: 's223145883@deakin.edu.au'
+    },
+
     admin_email: 's223145883@deakin.edu.au',
 
     tutorial_video: '3Q9hGfqx32w', // must only contain video ID!

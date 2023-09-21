@@ -182,7 +182,8 @@ export default {
         }
 
         .menu {
-            position: unset !important;
+            left: 0 !important;
+            width: calc(100% - 1rem);
         }
 
         .wipe-down {

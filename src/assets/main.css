@@ -10,8 +10,8 @@ body {
 div#app {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 2 * 0.3rem); /* compensate for border */
     height: 100vh;
+    max-height: 100vh;
 }
 
 header, nav, footer {

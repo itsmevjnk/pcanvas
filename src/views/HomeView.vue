@@ -213,7 +213,7 @@ export default {
         },
 
         handle_resize() {
-            this.main_height =  parseFloat(getComputedStyle(document.getElementById('app')).height)
+            this.main_height =  parseFloat(getComputedStyle(document.getElementById('main-window')).height) - 2 * 0.2 * this.rem_to_px
                             -   document.getElementsByTagName('header')[0].offsetHeight
                             -   document.getElementsByTagName('nav')[0].offsetHeight
                             -   document.getElementsByTagName('footer')[0].offsetHeight;
@@ -359,6 +359,10 @@ export default {
 
         pointer_y() {
             return store.drawing.pixel.y * store.drawing.scale + 1;
+        },
+
+        rem_to_px() {
+            return parseFloat(getComputedStyle(document.documentElement).fontSize);
         }
     }
 };
