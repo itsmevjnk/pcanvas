@@ -25,7 +25,7 @@ const canvas_container = ref(null);
             items: {
                 login: {
                     name: (store.user.name == '') ? 'Log in/Register' : 'Log out',
-                    action: () => window.login_logout = false
+                    action: () => window.login_logout = true
                 },
                 download: {
                     name: 'Download canvas',
@@ -99,8 +99,8 @@ const canvas_container = ref(null);
                 <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
                     width: canvas_width + 'px',
                     height: canvas_height + 'px'
-                }" v-no-ctx-menu @mousedown.left = "handle_canvas_click"></canvas>
-                <CanvasPointer id="pointer" v-show="store.drawing.pixel.selected"
+                }" v-no-ctx-menu @mousedown.left = "handle_canvas_click" :class="{ nodisp: !store.canvas.ready }"></canvas>
+                <CanvasPointer id="pointer" v-show="store.canvas.ready && store.drawing.pixel.selected"
                     :width="store.drawing.scale + 'px'" :height="store.drawing.scale + 'px'"
                     :x="'calc(' + pointer_x + 'px - 0.3rem)'" :y="'calc(' + pointer_y + 'px - 0.3rem)'"/>
             </div>
@@ -410,6 +410,11 @@ canvas {
     flex: 1;
     height: 100%;
     overflow: auto;
+    background: url('../assets/icons/wait.webp');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 15rem auto;
+    image-rendering: pixelated;
 }
 
 #main-canvas {
@@ -427,5 +432,9 @@ canvas {
 #pointer {
     border-color: #00ff00;
     animation: blinker 1s step-start infinite;
+}
+
+.nodisp {
+    display: none;
 }
 </style>

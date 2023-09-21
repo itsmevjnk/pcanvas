@@ -25,13 +25,14 @@ import {store} from '../store.js'
                 hidden: !store.drawing.pixel.selected,
                 'hidden-login': store.user.name == ''
             }">
-                <button :disabled="store.drawing.cooldown > 0" @click="$emit('place')">Place</button>
-                <button @click="store.drawing.pixel.selected = false">Cancel</button>
+                <button :disabled="store.drawing.cooldown > 0 || !store.canvas.ready" @click="$emit('place')">Place</button>
+                <button @click="store.drawing.pixel.selected = false" :disabled="!store.canvas.ready">Cancel</button>
             </div>
         </div>
         <div class="status-container">
             <div class="status-item flex-60">
-                <template v-if="store.user.name == ''">Log in to start placing pixels...</template>
+                <template v-if="!store.canvas.ready">Please wait while the canvas loads...</template>
+                <template v-else-if="store.user.name == ''">Log in to start placing pixels...</template>
                 <template v-else-if="store.drawing.cooldown > 0">You can place another pixel in {{ String(Math.floor(store.drawing.cooldown / 60)).padStart(2, '0') }}:{{ String(store.drawing.cooldown % 60).padStart(2, '0') }}.</template>
                 <template v-else-if="!store.drawing.pixel.selected">Select a pixel to draw on...</template>
                 <template v-else>Select the colour, then click Place to draw.</template>
