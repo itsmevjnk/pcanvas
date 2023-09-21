@@ -6,7 +6,7 @@ export const socket_state = reactive({
     connected: false
 });
 
-export const socket = io(store.api);
+export const socket = io(import.meta.env.VITE_API_URL);
 
 socket.on('connect', () => {
     socket_state.connected = true;

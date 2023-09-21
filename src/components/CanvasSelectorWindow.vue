@@ -50,7 +50,7 @@ export default {
 
     methods: {
         update_list() {
-            axios.get(store.api + '/canvas/list').then((ls_resp) => {
+            axios.get(import.meta.env.VITE_API_URL + '/canvas/list').then((ls_resp) => {
                 this.canvases = ls_resp.data.payload;
                 // console.log(this.canvases);
             });

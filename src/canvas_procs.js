@@ -13,7 +13,7 @@ export function load_canvas(callback) {
     store.canvas.ready = false;
 
     store.canvas.contents = Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15));
-    axios.get(store.api + '/canvas/' + store.canvas.id + '/fetch').then((f_resp) => {
+    axios.get(import.meta.env.VITE_API_URL + '/canvas/' + store.canvas.id + '/fetch').then((f_resp) => {
         /* populate pixels */
         f_resp.data.payload.forEach((pixel) => {
             // console.log(pixel);
@@ -23,7 +23,7 @@ export function load_canvas(callback) {
         });
         store.canvas.redraw = true;
 
-        axios.get(store.api + '/canvas/' + store.canvas.id + '/cooldown', { withCredentials: true }).then((c_resp) => {
+        axios.get(import.meta.env.VITE_API_URL + '/canvas/' + store.canvas.id + '/cooldown', { withCredentials: true }).then((c_resp) => {
             /* get cooldown timer */
             // console.log(c_resp.data);
             store.drawing.cooldown = c_resp.data.payload.timer;

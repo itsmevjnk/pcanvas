@@ -128,7 +128,7 @@ export default {
                 
                 if(this.error_list.length == 0) {
                     /* contact API if input is validated */
-                    axios.get(store.api + '/auth/exists?user=' + this.user + '&email=' + this.email).then((chk_resp) => {
+                    axios.get(import.meta.env.VITE_API_URL + '/auth/exists?user=' + this.user + '&email=' + this.email).then((chk_resp) => {
                         if(chk_resp.data.payload.user)
                             this.error_list.push('An user with the specified name already exists.');
                         if(chk_resp.data.payload.email)
@@ -136,7 +136,7 @@ export default {
                         if(this.error_list.length > 0)
                             this.raise_error_list();
                         else
-                            axios.post(store.api + '/auth/register', {
+                            axios.post(import.meta.env.VITE_API_URL + '/auth/register', {
                                 user: this.user,
                                 password: this.password,
                                 email: this.email
@@ -154,7 +154,7 @@ export default {
                 // console.log('logging in');
                 if(this.user == '' || this.password == '')
                     this.error = 'Please enter an user name (or email address) and a password.';
-                else axios.put(store.api + '/auth/login', {
+                else axios.put(import.meta.env.VITE_API_URL + '/auth/login', {
                     user: this.user,
                     password: this.password
                 }).then((resp) => {

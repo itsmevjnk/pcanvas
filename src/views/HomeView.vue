@@ -157,7 +157,7 @@ export default {
                             0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF];
 
         /* fetch user status */
-        axios.get(store.api + '/auth/query', { withCredentials: true }).then((resp) => {
+        axios.get(import.meta.env.VITE_API_URL + '/auth/query', { withCredentials: true }).then((resp) => {
             // console.log(resp.data.payload);
             if(resp.data.payload.email !== undefined) {
                 store.user.name = resp.data.payload.user;
@@ -174,12 +174,12 @@ export default {
         /* fetch canvas */
         if(this.$cookies.isKey('canvas')) {
             /* canvas ID already exists in cookies - fetch that one */
-            axios.get(store.api + '/canvas/info', {withCredentials: true}).then((resp) => {
+            axios.get(import.meta.env.VITE_API_URL + '/canvas/info', {withCredentials: true}).then((resp) => {
                 this.init_canvas(resp.data.payload);                
             });
         } else {
             /* grab latest canvas ID and information */
-            axios.get(store.api + '/canvas/list?limit=1').then((ls_resp) => {
+            axios.get(import.meta.env.VITE_API_URL + '/canvas/list?limit=1').then((ls_resp) => {
                 this.$cookies.set('canvas', ls_resp.data.payload[0].id);
                 this.init_canvas(ls_resp.data.payload[0]);
             });
@@ -194,7 +194,7 @@ export default {
     methods: {
         place_pixel() {
             if(store.drawing.cooldown > 0) return; // cooldown is not over
-            axios.put(store.api + '/canvas/' + store.canvas.id + '/place', {
+            axios.put(import.meta.env.VITE_API_URL + '/canvas/' + store.canvas.id + '/place', {
                 offset: store.drawing.pixel.y * store.canvas.width + store.drawing.pixel.x,
                 color: store.drawing.color
             }, { withCredentials: true }).then((resp) => {

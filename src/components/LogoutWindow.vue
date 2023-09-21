@@ -40,7 +40,7 @@ export default {
 
     methods: {
         logout() {
-            axios.delete(store.api + '/auth/logout', { withCredentials: true }).then((resp) => {
+            axios.delete(import.meta.env.VITE_API_URL + '/auth/logout', { withCredentials: true }).then((resp) => {
                 // nothing much to do here
             }).catch((err) => {
                 // nothing much to do here either
