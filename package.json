@@ -12,7 +12,6 @@
     "socket.io-client": "^4.7.2",
     "vue": "^3.3.4",
     "vue-cookies": "^1.8.3",
-    "vue-global-events": "^3.0.0",
     "vue-router": "^4.2.4"
   },
   "devDependencies": {

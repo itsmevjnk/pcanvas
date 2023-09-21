@@ -1,6 +1,5 @@
 <script setup>
 import { store } from '../store.js';
-import { GlobalEvents } from 'vue-global-events';
 import {RouterLink} from 'vue-router';
 
 import LoginWindow from './LoginWindow.vue';
@@ -12,7 +11,6 @@ const emits = defineEmits(['resize', 'center_camera']);
 </script>
 
 <template>
-    <GlobalEvents @click="click_handler"/>
     <nav class="menu-bar">
         <ul class="categories">
             <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-file">File</li>
