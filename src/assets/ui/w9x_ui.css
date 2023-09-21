@@ -180,7 +180,8 @@
 .w9x button:not(:disabled):active,
 .w9x button:not([disabled]):active,
 .w9x a.button:not(.disabled):active,
-.w9x ::-webkit-scrollbar-button:single-button:active {
+.w9x ::-webkit-scrollbar-button:single-button:active,
+.w9x .select-container.active::after {
     margin: 0;
     box-shadow: inset 0 0 0 0.1rem #000000, inset 0 0 0 0.2rem #808080;
     color: #000000;
@@ -346,6 +347,57 @@
     top: 0.2rem;
     accent-color: #ffffff;
     color: #000000;
+}
+
+/* OPTION - DROPDOWN LIST */
+
+.w9x .select-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 1.7rem;
+}
+
+.w9x .select-container select {
+    width: 100%;
+    height: 100%;
+    appearance: none;
+    background: #ffffff;
+    background-image: none;
+    outline: 0;
+    border: none;
+    box-shadow: inset -0.1rem -0.1rem 0 #ffffff, inset 0.1rem 0.1rem 0 #808080, inset -0.2rem -0.2rem 0 #c0c0c0, inset 0.2rem 0.2rem 0 #000000;
+    padding: 0.2rem;
+    padding-left: 0.4rem;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.w9x .select-container select option {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.w9x .select-container option:hover {
+    background-color: #000080;
+}
+
+.w9x .select-container::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 1.3rem;
+    height: 1.3rem;
+    top: 0.2rem;
+    right: 0.2rem;
+    bottom: 0;
+    box-shadow: inset -0.1rem -0.1rem 0 #000000, inset 0.1rem 0.1rem 0 #ffffff, inset -0.2rem -0.2rem 0 #808080, inset 0.2rem 0.2rem 0 #c0c0c0;
+    background-color: #c0c0c0;
+    background-image: url('./icons/arr-down.svg');
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.6rem;
+    background-position: center center;
+    pointer-events: none;
 }
 
 /* Correction for bold font */

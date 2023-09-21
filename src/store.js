@@ -5,7 +5,11 @@ export const store = reactive({
         width: 1024,
         height: 1024,
         id: NaN,
-        name: ''        
+        name: '',
+        contents: null,
+        update: [],
+        redraw: true,
+        ready: false        
     },
 
     drawing: {

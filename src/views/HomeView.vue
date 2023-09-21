@@ -8,6 +8,7 @@ import {store} from '../store.js'
 import { ref, watch } from 'vue'
 import axios from 'axios'
 import { socket } from '../socket.js'
+import { load_canvas } from '../canvas_procs.js'
 
 const canvas_container = ref(null);
 
@@ -44,10 +45,8 @@ export default {
         return {
             main_height: 0,
             main_top_height: 0,
-            canvas: null,
-            canvas_update: [], // list of pixels to be updated
-            canvas_redraw: true, // set to indicate that the canvas needs to be redrawn
             center_camera: false, // will be picked up by canvas handler
+            min_scale_calculated: false,
             cooldown_handler: null,
             palette: [], // color palette - will be filled in by mounted()
             palette_hexstr: [ // color palette as hex colour strings - used for fillStyle
@@ -97,43 +96,21 @@ export default {
             store.canvas.height = ls_resp.data.payload[0].height;
             store.canvas.id = ls_resp.data.payload[0].id;
             store.canvas.name = ls_resp.data.payload[0].name;
-            
-            this.canvas = Array(store.canvas.height).fill().map(() => Array(store.canvas.width).fill(15));
+
+            /* set up zoom scale watch */
+            watch(
+                () => store.drawing.scale,
+                this.handle_scale_change
+            );
             
             /* listen to window resize event to capture changes in canvas container size */
             window.addEventListener('resize', this.handle_resize);
             this.handle_resize();
 
-            axios.get(store.api + '/canvas/' + store.canvas.id + '/fetch').then((f_resp) => {
-                /* populate pixels */
-                f_resp.data.payload.forEach((pixel) => {
-                    // console.log(pixel);
-                    let x = pixel.offset % store.canvas.width;
-                    let y = Math.floor(pixel.offset / store.canvas.width);
-                    this.canvas[y][x] = pixel.color;
-                });
+            /* start canvas handling */
+            this.handle_canvas();
 
-                axios.get(store.api + '/canvas/' + store.canvas.id + '/cooldown', { withCredentials: true }).then((c_resp) => {
-                    /* get cooldown timer */
-                    // console.log(c_resp.data);
-                    store.drawing.cooldown = c_resp.data.payload.timer;
-                }).catch((err) => {
-                    // TODO: do something?
-                }).finally(() => {
-                    /* set up zoom scale watch - must be done AFTER minimum scale calculation */
-                    watch(
-                        () => store.drawing.scale,
-                        this.handle_scale_change
-                    );
-
-                    /* set up WebSocket */
-                    socket.on('place', this.handle_ws_place);
-                    socket.emit('subscribe', store.canvas.id);
-
-                    /* start canvas handling */
-                    this.handle_canvas();
-                });
-            });
+            load_canvas();
         });
     },
 
@@ -168,13 +145,6 @@ export default {
                 }, 1000);
         },
 
-        handle_ws_place(payload) {
-            let x = payload.offset % store.canvas.width, y = Math.floor(payload.offset / store.canvas.width);
-            // console.log('WS place event @', x, y);
-            this.canvas[y][x] = payload.color;
-            this.canvas_update.push([x, y]);
-        },
-
         handle_resize() {
             this.main_height =  parseFloat(getComputedStyle(document.getElementById('main-window')).height) - 2 * 0.2 * this.rem_to_px
                             -   document.getElementsByTagName('header')[0].offsetHeight
@@ -203,45 +173,47 @@ export default {
         handle_canvas() {
             // console.log('handle canvas');
             /* get the classes we need */
-            let canvas = document.getElementById('canvas');
-            if(canvas !== null) {
-                let ctx = canvas.getContext('2d');
-                
-                if(this.canvas_redraw) {
-                    /* redraw the whole canvas */
-                    let img_data = ctx.createImageData(store.canvas.width, store.canvas.height);
-                    let img_data_u32 = new Uint32Array(img_data.data.buffer);
-                    for(let y = 0; y < store.canvas.height; y++) {
-                        for(let x = 0; x < store.canvas.width; x++)
-                            img_data_u32[y * store.canvas.width + x] = this.palette[this.canvas[y][x]];
-                    }
-                    createImageBitmap(img_data).then((img_bitmap) => {
-                        ctx.drawImage(img_bitmap, 0, 0);
-                    });
+            if(store.canvas.contents !== null) {
+                let canvas = document.getElementById('canvas');
+                if(canvas !== null) {
+                    let ctx = canvas.getContext('2d');
                     
-                    this.canvas_redraw = false; // prevent re-triggering
-                    this.canvas_update = []; // clear the update list (as we have updated all pixels)
-                }
-
-                if(this.canvas_update.length > 0) {
-                    // console.log(this.canvas_update);
-                    /* update some pixels - we'll use fillRect */
-                    while(this.canvas_update.length > 0) {
-                        let [x, y] = this.canvas_update.pop();
-                        ctx.fillStyle = this.palette_hexstr[this.canvas[y][x]];
-                        ctx.fillRect(x, y, 1, 1);
+                    if(store.canvas.redraw) {
+                        /* redraw the whole canvas */
+                        let img_data = ctx.createImageData(store.canvas.width, store.canvas.height);
+                        let img_data_u32 = new Uint32Array(img_data.data.buffer);
+                        for(let y = 0; y < store.canvas.height; y++) {
+                            for(let x = 0; x < store.canvas.width; x++)
+                                img_data_u32[y * store.canvas.width + x] = this.palette[store.canvas.contents[y][x]];
+                        }
+                        createImageBitmap(img_data).then((img_bitmap) => {
+                            ctx.drawImage(img_bitmap, 0, 0);
+                        });
+                        
+                        store.canvas.redraw = false; // prevent re-triggering
+                        store.canvas.update = []; // clear the update list (as we have updated all pixels)
                     }
-                }
 
-                /* center camera to selected pixel if requested */
-                if(this.center_camera && this.$refs.canvas_container.clientHeight > 0) {
-                    let [scroll_x, scroll_y] = this.calculate_scroll_xy(store.drawing.pixel.x, store.drawing.pixel.y, store.drawing.scale);
+                    if(store.canvas.update.length > 0) {
+                        // console.log(store.canvas.update);
+                        /* update some pixels - we'll use fillRect */
+                        while(store.canvas.update.length > 0) {
+                            let [x, y] = store.canvas.update.pop();
+                            ctx.fillStyle = this.palette_hexstr[store.canvas.contents[y][x]];
+                            ctx.fillRect(x, y, 1, 1);
+                        }
+                    }
 
-                    /* set new scroll position */
-                    this.$refs.canvas_container.scrollLeft = scroll_x;
-                    this.$refs.canvas_container.scrollTop = scroll_y;
+                    /* center camera to selected pixel if requested */
+                    if(this.center_camera && this.$refs.canvas_container.clientHeight > 0) {
+                        let [scroll_x, scroll_y] = this.calculate_scroll_xy(store.drawing.pixel.x, store.drawing.pixel.y, store.drawing.scale);
 
-                    this.center_camera = false; // reset flag
+                        /* set new scroll position */
+                        this.$refs.canvas_container.scrollLeft = scroll_x;
+                        this.$refs.canvas_container.scrollTop = scroll_y;
+
+                        this.center_camera = false; // reset flag
+                    }
                 }
             }
             
@@ -278,6 +250,10 @@ export default {
         },
 
         handle_scale_change(new_scale, old_scale) {
+            if(!this.min_scale_calculated) {
+                this.min_scale_calculated = true;
+                return;
+            }
             // console.log(new_scale, old_scale);
             
             /* calculate camera center point location (pixel) */

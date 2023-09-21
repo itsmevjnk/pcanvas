@@ -6,6 +6,7 @@ import {RouterLink} from 'vue-router';
 import LoginWindow from './LoginWindow.vue';
 import LogoutWindow from './LogoutWindow.vue';
 import GoToWindow from './GoToWindow.vue';
+import CanvasSelectorWindow from './CanvasSelectorWindow.vue';
 
 const emits = defineEmits(['resize', 'center_camera']);
 </script>
@@ -29,9 +30,9 @@ const emits = defineEmits(['resize', 'center_camera']);
             <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
             <li><a :class="{ disabled: store.drawing.scale <= store.drawing.scale_min }" @click="zoom_out">Zoom out</a></li>
             <li class="separator"></li>
-            <li><a href="#" @click="goto_window = true; close_menu();">Go to...</a></li>
+            <li><a @click="goto_window = true; close_menu();">Go to...</a></li>
             <li class="separator"></li>
-            <li><a href="#">Past canvases</a></li>
+            <li><a @click="selector_window = true; close_menu();">Select canvas...</a></li>
         </ul>
         <ul id="menu-help" class="menu wipe-down inactive">
             <li><RouterLink to="howto" @click="close_menu">How to play</RouterLink></li>
@@ -44,6 +45,7 @@ const emits = defineEmits(['resize', 'center_camera']);
     <LoginWindow @cancel="login_window = false" @done="logio_resize(); login_window = false;" v-if="login_window"/>
     <LogoutWindow @cancel="logout_window = false" @done="logio_resize(); logout_window = false;" v-if="logout_window"/>
     <GoToWindow @cancel="goto_window = false" @done="goto_window = false; $emit('center_camera');" v-if="goto_window"/>
+    <CanvasSelectorWindow @cancel="selector_window = false" @done="selector_window = false" v-if="selector_window"/>
 </template>
 
 <script>
@@ -55,6 +57,7 @@ export default {
             login_window: false,
             logout_window: false,
             goto_window: false,
+            selector_window: false,
 
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
