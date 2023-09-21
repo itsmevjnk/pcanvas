@@ -8,8 +8,6 @@ const props = defineProps({
         default: {}
     }
 });
-
-const emits = defineEmits(['resize', 'center_camera']);
 </script>
 
 <template>
