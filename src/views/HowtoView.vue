@@ -2,16 +2,13 @@
 import { store } from '../store.js'
 import TitleBar from '../components/TitleBar.vue'
 import { RouterLink } from 'vue-router'
-import { disable_ctx_menu_all_onmount } from '../utils.js'
-
-disable_ctx_menu_all_onmount();
 </script>
 
 <template>
     <TitleBar title="How to pCanvas"/>
     <main>
         <div class="msg-container">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/info.png">
+            <img class="icon pixel" src="../assets/ui/icons/info.png" v-no-ctx-menu>
             <div class="content">
                 pCanvas is a <a href="https://reddit.com/r/place" target="_blank">r/place</a>-like public drawing canvas. Be a part of its history by:
                 <ul>
@@ -29,7 +26,7 @@ disable_ctx_menu_all_onmount();
         </div>
     </main>
     <footer>
-        <RouterLink to="/" class="button" autofocus>OK</RouterLink>
+        <RouterLink to="/" class="button" v-focus>OK</RouterLink>
     </footer>
 </template>
 

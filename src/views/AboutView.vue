@@ -1,18 +1,15 @@
 <script setup>
 import TitleBar from '../components/TitleBar.vue'
 import { RouterLink } from 'vue-router'
-import { disable_ctx_menu_all_onmount } from '../utils.js'
 
 import { maps } from '../maps.js'
-
-disable_ctx_menu_all_onmount()
 </script>
 
 <template>
     <TitleBar title="About pCanvas"/>
     <main>
         <div class="msg-container">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/info.png">
+            <img class="icon pixel" src="../assets/ui/icons/info.png" v-no-ctx-menu>
             <div class="content">
                 <p>
                     <b>Developed by:</b><br>
@@ -30,7 +27,7 @@ disable_ctx_menu_all_onmount()
         </div>
     </main>
     <footer>
-        <RouterLink to="/" class="button" autofocus>OK</RouterLink>
+        <RouterLink to="/" class="button" v-focus>OK</RouterLink>
     </footer>
 </template>
 

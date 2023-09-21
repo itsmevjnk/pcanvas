@@ -1,6 +1,5 @@
 <script setup>
 import Window from './Window.vue';
-import { disable_ctx_menu_all_onmount } from '../utils.js';
 import axios from 'axios';
 import { store } from '../store.js';
 
@@ -12,14 +11,12 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['cancel', 'done'])
-
-disable_ctx_menu_all_onmount();
 </script>
 
 <template>
     <Window title="Go To..." :z_index="z_index_num" close="true" @close="$emit('cancel')">
         <div class="msg-container" style="margin-bottom: 0;">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/run.png">
+            <img class="icon pixel" src="../assets/ui/icons/run.png" v-no-ctx-menu>
             <div class="content">
                 Type a canvas pixel coordinate, and pCanvas will take you there.
             </div>

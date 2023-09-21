@@ -3,7 +3,6 @@ import TitleBar from '../components/TitleBar.vue'
 import CanvasMenuBar from '../components/CanvasMenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
 import CanvasPointer from '../components/CanvasPointer.vue'
-import { disable_ctx_menu_all_onmount } from '../utils.js'
 import {store} from '../store.js'
 import { ref, watch } from 'vue'
 import axios from 'axios'
@@ -11,8 +10,6 @@ import { socket } from '../socket.js'
 import { load_canvas } from '../canvas_procs.js'
 
 const canvas_container = ref(null);
-
-disable_ctx_menu_all_onmount();
 </script>
 
 <template>
@@ -28,7 +25,7 @@ disable_ctx_menu_all_onmount();
                 <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
                     width: canvas_width + 'px',
                     height: canvas_height + 'px'
-                }" class="no-ctx-menu" @mousedown.left = "handle_canvas_click"></canvas>
+                }" v-no-ctx-menu @mousedown.left = "handle_canvas_click"></canvas>
                 <CanvasPointer id="pointer" v-show="store.drawing.pixel.selected"
                     :width="store.drawing.scale + 'px'" :height="store.drawing.scale + 'px'"
                     :x="'calc(' + pointer_x + 'px - 0.3rem)'" :y="'calc(' + pointer_y + 'px - 0.3rem)'"/>

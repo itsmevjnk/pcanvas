@@ -1,6 +1,5 @@
 <script setup>
 import Window from './Window.vue';
-import { disable_ctx_menu_all_onmount, refresh_autofocus_onmount } from '../utils.js';
 import axios from 'axios';
 import { store } from '../store.js';
 
@@ -12,9 +11,6 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['cancel', 'done']);
-
-disable_ctx_menu_all_onmount();
-refresh_autofocus_onmount();
 </script>
 
 <template>
@@ -22,7 +18,7 @@ refresh_autofocus_onmount();
         <div class="outer">
             <div class="prompt">
                 <div class="row">
-                    <img src="../assets/ui/icons/network.png" class="icon pixel no-ctx-menu"/>
+                    <img src="../assets/ui/icons/network.png" class="icon pixel" v-no-ctx-menu/>
                     <div class="prompt-text">
                         Enter your user name and password to start drawing.
                     </div>
@@ -51,7 +47,7 @@ refresh_autofocus_onmount();
                 </div>
             </div>
             <div class="buttons">
-                <button @click="submit" :disabled="input_disable" autofocus>OK</button>
+                <button @click="submit" :disabled="input_disable" v-focus>OK</button>
                 <button @click="$emit('cancel')" :disabled="input_disable">Cancel</button>
                 <button @click="register = true; email = ''; password_confirm = '';" :disabled="input_disable" v-if="!register">Register</button>
                 <button @click="register = false;" :disabled="input_disable" v-else>Log in</button>
@@ -60,7 +56,7 @@ refresh_autofocus_onmount();
     </Window>
     <Window title="Error" :z_index="z_index_num + 1" v-if="error !== null">
         <div class="msg-container">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/error.png">
+            <img class="icon pixel" src="../assets/ui/icons/error.png" v-no-ctx-menu>
             <div class="content">
                 <div>{{ error }}</div>
                 <ul v-if="error_list.length > 0">
@@ -74,7 +70,7 @@ refresh_autofocus_onmount();
     </Window>
     <Window title="Success" :z_index="z_index_num + 1" v-if="register_success">
         <div class="msg-container">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/info.png">
+            <img class="icon pixel" src="../assets/ui/icons/info.png" v-no-ctx-menu>
             <div class="content">
                 Registration complete. You can now sign in using these credentials:
                 <ul>

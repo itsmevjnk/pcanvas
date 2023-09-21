@@ -1,6 +1,5 @@
 <script setup>
 import Window from './Window.vue';
-import { disable_ctx_menu_all_onmount, refresh_autofocus_onmount } from '../utils.js';
 import axios from 'axios';
 import { store } from '../store.js';
 
@@ -12,22 +11,19 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['cancel', 'done']);
-
-disable_ctx_menu_all_onmount();
-refresh_autofocus_onmount();
 </script>
 
 <template>
     <Window title="Log Out pCanvas" blocking="blocking-bg" :z_index="z_index_num" close="true" @close="$emit('cancel')">
         <div class="msg-container">
-            <img class="icon pixel no-ctx-menu" src="../assets/ui/icons/key.png">
+            <img class="icon pixel" src="../assets/ui/icons/key.png" v-no-ctx-menu>
             <div class="content">
                 Are you sure you want to log out?
             </div>
         </div>
         <div class="button-group">
             <button @click="logout">Yes</button>
-            <button @click="$emit('cancel')" autofocus>No</button>
+            <button @click="$emit('cancel')" v-focus>No</button>
         </div>
     </Window>
 </template>
