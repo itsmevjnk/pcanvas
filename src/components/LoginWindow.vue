@@ -167,10 +167,10 @@ export default {
                     this.$emit('done');
                 }).catch((error) => {
                     if(error.response) {
-                        if(error.response.status == 400)
+                        if(error.response.status == 403)
                             this.error = 'Invalid user name or password.';
                         else
-                            this.error = 'Server error:\n' + resp.data.message;
+                            this.error = 'Server error:\n' + error.response.data.message;
                     }
                 });
             }
