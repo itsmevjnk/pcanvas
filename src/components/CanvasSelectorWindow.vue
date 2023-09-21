@@ -2,7 +2,7 @@
 import Window from './Window.vue';
 import axios from 'axios';
 import { store } from '../store.js';
-import { load_canvas } from '../canvas_procs.js';
+import { load_canvas, unsubscribe_canvas_ws } from '../canvas_procs.js';
 
 const props = defineProps({
     z_index: {
@@ -68,6 +68,7 @@ export default {
                 }
             }
 
+            unsubscribe_canvas_ws();
             load_canvas(() => {
                 this.$emit('done');
             });            

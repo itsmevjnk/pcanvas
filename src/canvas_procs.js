@@ -40,3 +40,8 @@ export function load_canvas(callback) {
         });
     });
 }
+
+export function unsubscribe_canvas_ws() {
+    socket.emit('unsubscribe', store.canvas.id); // unsubscribe from canvas
+    socket.off('place', this.handle_ws_place);
+}

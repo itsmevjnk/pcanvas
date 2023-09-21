@@ -6,8 +6,7 @@ import CanvasPointer from '../components/CanvasPointer.vue'
 import {store} from '../store.js'
 import { ref, watch } from 'vue'
 import axios from 'axios'
-import { socket } from '../socket.js'
-import { load_canvas } from '../canvas_procs.js'
+import { load_canvas, unsubscribe_canvas_ws } from '../canvas_procs.js'
 
 
 import LoginWindow from '../components/LoginWindow.vue';
@@ -198,8 +197,7 @@ export default {
 
     unmounted() {
         window.removeEventListener('resize', this.handle_resize);
-        socket.emit('unsubscribe', store.canvas.id); // unsubscribe from canvas
-        socket.off('place', this.handle_ws_place);
+        unsubscribe_canvas_ws();
     },
 
     methods: {
