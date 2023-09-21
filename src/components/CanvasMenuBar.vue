@@ -23,7 +23,7 @@ const emits = defineEmits(['resize', 'center_camera']);
                 <a @click="login_window = true; close_menu();" v-if="store.user.name == ''">Log in/Register</a>
                 <a @click="logout_window = true; close_menu();" v-else>Log out</a>
             </li>
-            <li><a href="#">Download canvas</a></li>
+            <li><a @click="download_canvas">Download canvas</a></li>
         </ul>
         <ul id="menu-view" class="menu wipe-down inactive">
             <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
@@ -152,6 +152,16 @@ export default {
                 setInterval(() => {
                     this.$emit('resize');
                 }, 10); // allow some time for the UI to update before requesting resize
+            }
+        },
+
+        download_canvas() {
+            let canvas = document.getElementById('canvas');
+            if(canvas !== null) {
+                var link = document.createElement('a');
+                link.download = 'canvas.png';
+                link.href = canvas.toDataURL();
+                link.click();
             }
         }
     }
