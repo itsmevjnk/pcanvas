@@ -51,7 +51,7 @@ export default {
             let hr_12 = (hr % 12 == 0) ? 12 : (hr % 12);
             let am_pm = (hr >= 12 && hr <= 23) ? 'PM' : 'AM';
 
-            this.time = String(hr_12).padStart(2, ' ') + ':' + String(min).padStart(2, ' ') + ' ' + am_pm;
+            this.time = hr_12 + ':' + String(min).padStart(2, '0') + ' ' + am_pm;
         }
     }
 };
