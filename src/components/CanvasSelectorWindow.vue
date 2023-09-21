@@ -26,7 +26,7 @@ const emits = defineEmits(['cancel', 'done']);
             <span style="margin-right: 0.5rem;">Go to:</span>
             <div class="select-container">
                 <select id="selected-canvas" :disabled="input_disabled">
-                    <option v-for="{ id, name, width, height, date } in canvases" :value="id" :selected="id == store.canvas.id">{{ name }} ({{ width }}x{{ height }}, {{ date.replace(/T.*/g, '') }}{{ (id == store.canvas.id) ? ', selected' : '' }})</option>
+                    <option v-for="{ id, name, width, height, date, readonly } in canvases" :value="id" :selected="id == store.canvas.id">{{ name }} ({{ width }}x{{ height }}, {{ date.replace(/T.*/g, '') }}{{ (readonly) ? ', read only' : '' }}{{ (id == store.canvas.id) ? ', selected' : '' }})</option>
                 </select>
             </div>
         </div>
@@ -64,6 +64,7 @@ export default {
                     store.canvas.name = this.canvases[i].name;
                     store.canvas.width = this.canvases[i].width;
                     store.canvas.height = this.canvases[i].height;
+                    store.canvas.readonly = this.canvases[i].readonly;
                     break;
                 }
             }

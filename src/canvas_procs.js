@@ -35,6 +35,7 @@ export function load_canvas(callback) {
             socket.emit('subscribe', store.canvas.id);
             
             store.canvas.ready = true;
+            store.drawing.pixel.selected = false;
 
             if(callback !== undefined) callback();
         });

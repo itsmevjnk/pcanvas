@@ -54,7 +54,7 @@ export default {
         go_to() {
             store.drawing.pixel.x = this.x;
             store.drawing.pixel.y = this.y;
-            store.drawing.pixel.selected = true;
+            if(store.user.moderator || !store.canvas.readonly) store.drawing.pixel.selected = true;
             this.$emit('done');
         }
     },

@@ -100,7 +100,7 @@ const canvas_container = ref(null);
                     width: canvas_width + 'px',
                     height: canvas_height + 'px'
                 }" v-no-ctx-menu @mousedown.left = "handle_canvas_click" :class="{ nodisp: !store.canvas.ready }"></canvas>
-                <CanvasPointer id="pointer" v-show="store.canvas.ready && store.drawing.pixel.selected"
+                <CanvasPointer id="pointer" v-show="store.canvas.ready && store.drawing.pixel.selected && (store.user.moderator || !store.canvas.readonly)"
                     :width="store.drawing.scale + 'px'" :height="store.drawing.scale + 'px'"
                     :x="'calc(' + pointer_x + 'px - 0.3rem)'" :y="'calc(' + pointer_y + 'px - 0.3rem)'"/>
             </div>
@@ -177,6 +177,7 @@ export default {
             store.canvas.height = ls_resp.data.payload[0].height;
             store.canvas.id = ls_resp.data.payload[0].id;
             store.canvas.name = ls_resp.data.payload[0].name;
+            store.canvas.readonly = ls_resp.data.payload[0].readonly;
 
             /* set up zoom scale watch */
             watch(
@@ -304,6 +305,7 @@ export default {
         handle_canvas_click(event) {
             // console.log(event.offsetX);
             // console.log(event.offsetY);
+            if(!store.user.moderator && store.canvas.readonly) return; // read-only
             let x = event.offsetX; if(x < 0) x = 0;
             let y = event.offsetY; if(y < 0) y = 0;
             store.drawing.pixel.x = Math.floor(x / store.drawing.scale);

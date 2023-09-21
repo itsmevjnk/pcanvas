@@ -9,7 +9,8 @@ export const store = reactive({
         contents: null,
         update: [],
         redraw: true,
-        ready: false        
+        ready: false,
+        readonly: false        
     },
 
     drawing: {
