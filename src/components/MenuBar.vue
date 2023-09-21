@@ -2,10 +2,12 @@
 import { store } from '../store.js';
 import {RouterLink} from 'vue-router';
 
-import LoginWindow from './LoginWindow.vue';
-import LogoutWindow from './LogoutWindow.vue';
-import GoToWindow from './GoToWindow.vue';
-import CanvasSelectorWindow from './CanvasSelectorWindow.vue';
+const props = defineProps({
+    data: {
+        type: Object,
+        default: {}
+    }
+});
 
 const emits = defineEmits(['resize', 'center_camera']);
 </script>
@@ -13,49 +15,28 @@ const emits = defineEmits(['resize', 'center_camera']);
 <template>
     <nav class="menu-bar">
         <ul class="categories">
-            <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-file">File</li>
-            <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-view">View</li>
-            <li @mouseover="hover_menu" @click="toggle_menu" data-target="menu-help">Help</li>
+            <li v-for="(value, key) in props.data" :data-target="key" @mouseover="hover_menu" @click="toggle_menu">{{ value.name }}</li>
         </ul>
-        <ul id="menu-file" class="menu wipe-down inactive">
-            <li>
-                <a @click="login_window = true; close_menu();" v-if="store.user.name == ''">Log in/Register</a>
-                <a @click="logout_window = true; close_menu();" v-else>Log out</a>
+        <ul v-for="(m_value, m_key) in props.data" :data-menu="m_key" class="menu wipe-down inactive">
+            <li v-for="(i_value, i_key) in m_value.items" :class="{
+                separator: i_value == null
+            }">
+                <template v-if="i_value != null">
+                    <a v-if="'action' in i_value" :data-item="i_key" data-itemtype="action" :class="{ disabled: 'disabled' in i_value && i_value.disabled == true }">{{ i_value.name }}</a>
+                    <RouterLink v-else-if="'route' in i_value" :to="i_value.route" @click="close_menu" :data-item="i_key" data-itemtype="router_link" :class="{ disabled: 'disabled' in i_value && i_value.disabled == true }">{{ i_value.name }}</RouterLink>
+                    <a v-else-if="'link' in i_value" :href="i_value.link" :data-item="i_key" data-itemtype="link" :class="{ disabled: 'disabled' in i_value && i_value.disabled == true }">{{ i_value.name }}</a>
+                </template>
             </li>
-            <li><a @click="download_canvas">Download canvas</a></li>
-        </ul>
-        <ul id="menu-view" class="menu wipe-down inactive">
-            <li><a :class="{ disabled: store.drawing.scale >= store.drawing.scale_max }" @click="zoom_in">Zoom in</a></li>
-            <li><a :class="{ disabled: store.drawing.scale <= store.drawing.scale_min }" @click="zoom_out">Zoom out</a></li>
-            <li class="separator"></li>
-            <li><a @click="goto_window = true; close_menu();">Go to...</a></li>
-            <li class="separator"></li>
-            <li><a @click="selector_window = true; close_menu();">Select canvas...</a></li>
-        </ul>
-        <ul id="menu-help" class="menu wipe-down inactive">
-            <li><RouterLink to="howto" @click="close_menu">How to play</RouterLink></li>
-            <li><a href="#">What's new</a></li>
-            <li><RouterLink to="about" @click="close_menu">About</RouterLink></li>
-            <li class="separator"></li>
-            <li><a v-bind:href="'mailto:' + store.admin_email">Contact admin</a></li>
         </ul>
     </nav>
-    <LoginWindow @cancel="login_window = false" @done="logio_resize(); login_window = false;" v-if="login_window"/>
-    <LogoutWindow @cancel="logout_window = false" @done="logio_resize(); logout_window = false;" v-if="logout_window"/>
-    <GoToWindow @cancel="goto_window = false" @done="goto_window = false; $emit('center_camera');" v-if="goto_window"/>
-    <CanvasSelectorWindow @cancel="selector_window = false" @done="selector_window = false" v-if="selector_window"/>
 </template>
 
 <script>
 export default {
-    name: 'CanvasMenuBar',
+    name: 'MenuBar',
     data() {
         return {
             opened_menu: null,
-            login_window: false,
-            logout_window: false,
-            goto_window: false,
-            selector_window: false,
 
             /* handler for aligning drop-down menu with its category item */
             menu_handler: function() {
@@ -63,7 +44,7 @@ export default {
                 let elements = document.getElementsByClassName('menu');
                 for(let e of elements) {
                     // console.log(e);
-                    let bar_item = document.querySelector('[data-target="' + e.id + '"]');
+                    let bar_item = document.querySelector('[data-target="' + e.dataset.menu + '"]');
                     // console.log(bar_item);
                     let bar_item_pos = bar_item.getBoundingClientRect();
                     // console.log('calc(' + bar_item_pos.left + 'px - ' + ((bar_item == bar_item.parentNode.firstElementChild) ? '0.1rem' : '0.3rem') + ')');
@@ -74,6 +55,22 @@ export default {
     },
 
     mounted() {
+        /* set up click event handlers for action items */
+        Object.entries(this.data).forEach((m_entry) => {
+            let [m_key, m_value] = m_entry;
+            Object.entries(m_value.items).forEach((i_entry) => {
+                let [i_key, i_value] = i_entry;
+                if(i_value != null && 'action' in i_value) {
+                    let e = document.querySelector('[data-item=' + i_key + ']');
+                    // console.log(e);
+                    e.addEventListener('click', (event) => {
+                        i_value.action(event);
+                        this.close_menu();
+                    });
+                }
+            });
+        });
+
         this.menu_handler();
         window.addEventListener('resize', this.menu_handler);
         window.addEventListener('click', this.click_handler);
@@ -103,25 +100,11 @@ export default {
             }
         },
 
-        zoom_in() {
-            if(store.drawing.scale < store.drawing.scale_max) {
-                store.drawing.scale++;
-                this.close_menu();
-            }
-        },
-
-        zoom_out() {
-            if(store.drawing.scale > store.drawing.scale_min) {
-                store.drawing.scale--;
-                this.close_menu();
-            }
-        },
-        
         /* functions for handling menu bar */
         activate_menu(id) {
             let menu_elements = document.getElementsByClassName('menu');
             for(let e of menu_elements) {
-                if(e.id !== id) e.classList.add('inactive');
+                if(e.dataset.menu !== id) e.classList.add('inactive');
                 else e.classList.remove('inactive');
             }
 
@@ -145,24 +128,6 @@ export default {
             if(this.opened_menu !== null && e.target.closest('.menu-bar') === null) {
                 this.opened_menu = null;
                 this.update_menu();
-            }
-        },
-
-        logio_resize() {
-            if(getComputedStyle(document.querySelector('.actions')).flexDirection == 'column') {
-                setInterval(() => {
-                    this.$emit('resize');
-                }, 10); // allow some time for the UI to update before requesting resize
-            }
-        },
-
-        download_canvas() {
-            let canvas = document.getElementById('canvas');
-            if(canvas !== null) {
-                var link = document.createElement('a');
-                link.download = 'canvas.png';
-                link.href = canvas.toDataURL();
-                link.click();
             }
         }
     }

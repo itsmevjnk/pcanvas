@@ -1,6 +1,6 @@
 <script setup>
 import TitleBar from '../components/TitleBar.vue'
-import CanvasMenuBar from '../components/CanvasMenuBar.vue'
+import MenuBar from '../components/MenuBar.vue'
 import CanvasFooter from '../components/CanvasFooter.vue'
 import CanvasPointer from '../components/CanvasPointer.vue'
 import {store} from '../store.js'
@@ -9,12 +9,87 @@ import axios from 'axios'
 import { socket } from '../socket.js'
 import { load_canvas } from '../canvas_procs.js'
 
+
+import LoginWindow from '../components/LoginWindow.vue';
+import LogoutWindow from '../components/LogoutWindow.vue';
+import GoToWindow from '../components/GoToWindow.vue';
+import CanvasSelectorWindow from '../components/CanvasSelectorWindow.vue';
+
 const canvas_container = ref(null);
 </script>
 
 <template>
     <TitleBar :title="((store.canvas.name == '') ? '' : (store.canvas.name + ' - ')) + 'pCanvas'"/>
-    <CanvasMenuBar @resize="handle_resize" @center_camera="center_camera = true"/>
+    <MenuBar :data="{
+        file: {
+            name: 'File',
+            items: {
+                login: {
+                    name: (store.user.name == '') ? 'Log in/Register' : 'Log out',
+                    action: () => window.login_logout = false
+                },
+                download: {
+                    name: 'Download canvas',
+                    action: download_canvas
+                }
+            }
+        },
+
+        view: {
+            name: 'View',
+            items: {
+                zoom_in: {
+                    name: 'Zoom in',
+                    disabled: store.drawing.scale >= store.drawing.scale_max,
+                    action: () => {
+                        if(store.drawing.scale < store.drawing.scale_max) store.drawing.scale++;
+                    }
+                },
+                zoom_out: {
+                    name: 'Zoom out',
+                    disabled: store.drawing.scale <= store.drawing.scale_min,
+                    action: () => {
+                        if(store.drawing.scale > store.drawing.scale_min) store.drawing.scale--;
+                    }
+                },
+
+                sep_1: null,
+
+                go_to: {
+                    name: 'Go to...',
+                    action: () => window.goto = true
+                },
+
+                sep_2: null,
+
+                select_canvas: {
+                    name: 'Select canvas...',
+                    action: () => window.selector = true
+                }
+            }
+        },
+
+        help: {
+            name: 'Help',
+            items: {
+                howto: {
+                    name: 'How to play',
+                    route: 'howto'
+                },
+                about: {
+                    name: 'About',
+                    route: 'about'
+                },
+
+                sep: null,
+
+                contact: {
+                    name: 'Contact admin',
+                    link: 'mailto:' + store.admin_email
+                }
+            }
+        }
+    }"/>
     <main id="main-canvas" :style="{
         'max-height': main_height + 'px'
     }">
@@ -33,6 +108,10 @@ const canvas_container = ref(null);
         </div>
     </main>
     <CanvasFooter @place="place_pixel"/>
+    <LoginWindow @cancel="window.login_logout = false" @done="logio_resize(); window.login_logout = false;" v-if="window.login_logout && store.user.name === ''"/>
+    <LogoutWindow @cancel="window.login_logout = false" @done="logio_resize(); window.login_logout = false;" v-if="window.login_logout && store.user.name !== ''"/>
+    <GoToWindow @cancel="window.goto = false" @done="window.goto = false; center_camera = true;" v-if="window.goto"/>
+    <CanvasSelectorWindow @cancel="window.selector = false" @done="window.selector = false" v-if="window.selector"/>
 </template>
 
 <script>
@@ -51,7 +130,13 @@ export default {
                 '#000080', '#800080', '#008080', '#808080',
                 '#c0c0c0', '#ff0000', '#00ff00', '#ffff00',
                 '#0000ff', '#ff00ff', '#00ffff', '#ffffff'
-            ]
+            ],
+
+            window: {
+                login_logout: false,
+                goto: false,
+                selector: false
+            }
         };
     },
 
@@ -264,7 +349,25 @@ export default {
             /* set new scroll position */
             container.scrollLeft = scroll_x;
             container.scrollTop = scroll_y;
-        }
+        },
+
+        download_canvas() {
+            let canvas = document.getElementById('canvas');
+            if(canvas !== null) {
+                var link = document.createElement('a');
+                link.download = 'canvas.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        },      
+
+        logio_resize() {
+            if(getComputedStyle(document.querySelector('.actions')).flexDirection == 'column') {
+                setInterval(() => {
+                    this.handle_resize();
+                }, 10); // allow some time for the UI to update before requesting resize
+            }
+        },
     },
 
     computed: {
