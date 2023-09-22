@@ -99,7 +99,8 @@ const canvas_container = ref(null);
                 <canvas id="canvas" :width="store.canvas.width" :height="store.canvas.height" :style="{
                     width: canvas_width + 'px',
                     height: canvas_height + 'px'
-                }" v-no-ctx-menu @mousedown.left = "handle_canvas_click" :class="{ nodisp: !store.canvas.ready }"></canvas>
+                }" v-no-ctx-menu @mousedown.left = "handle_canvas_click" :class="{ nodisp: !store.canvas.ready }"
+                @touchstart="handle_ptr_down" @touchmove="handle_ptr_move" @touchend="handle_ptr_up"></canvas>
                 <CanvasPointer id="pointer" v-show="store.canvas.ready && store.drawing.pixel.selected && (store.user.moderator || !store.canvas.readonly)"
                     :width="store.drawing.scale + 'px'" :height="store.drawing.scale + 'px'"
                     :x="'calc(' + pointer_x + 'px - 0.3rem)'" :y="'calc(' + pointer_y + 'px - 0.3rem)'"/>
@@ -135,6 +136,10 @@ export default {
                 login_logout: false,
                 goto: false,
                 selector: false
+            },
+
+            touch: {
+                last_distance: null
             }
         };
     },
@@ -381,6 +386,39 @@ export default {
             this.handle_canvas();
 
             load_canvas();
+        },
+
+        handle_ptr_down(event) {
+            // console.log('ptr down', event);
+            this.touch.last_distance = null;
+        },
+
+        handle_ptr_move(event) {
+            // console.log('ptr move', event);
+            if(event.touches.length == 2) {
+                /* two finger gesture - very well be zooming */
+                event.preventDefault(); // block scrolling
+                let distance = Math.sqrt((event.touches[0].clientX - event.touches[1].clientX)**2 + (event.touches[0].clientY - event.touches[1].clientY)**2);
+                if(this.touch.last_distance !== null) {
+                    /* perform comparison */
+                    let delta = Math.floor(Math.abs((distance - this.touch.last_distance) * 0.75));
+                    let add = (distance > this.touch.last_distance);
+                    if(add) {
+                        store.drawing.scale += delta;
+                        if(store.drawing.scale > store.drawing.scale_max) store.drawing.scale = store.drawing.scale_max;
+                    } else {
+                        store.drawing.scale -= delta;
+                        if(store.drawing.scale < store.drawing.scale_min) store.drawing.scale = store.drawing.scale_min;
+                    }
+                    // console.log(delta, add);
+                }
+                this.touch.last_distance = distance;
+            }
+        },
+
+        handle_ptr_up(event) {
+            // console.log('ptr up', event);
+            this.touch.last_distance = null;
         }
     },
 
