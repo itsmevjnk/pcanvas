@@ -26,6 +26,9 @@ import { maps } from '../maps.js'
                     Written in HTML, CSS and JS (Vue 3) for the SIT120 2.2C and 3.1D tasks.<br>
                     Backend written in JS (NodeJS + Express) as part of the SIT120 3.1D task.
                 </p>
+                <p>
+                    Microsoft&reg; and Windows&reg; are either registered trademarks or trademarks of Microsoft Corporation in the United States and/or other countries.
+                </p>
             </div>
         </div>
     </main>
