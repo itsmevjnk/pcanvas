@@ -92,7 +92,7 @@ export default {
 
 #clock {
     width: 4rem;
-    text-align: end;
+    text-align: center;
 }
 
 @media screen and (max-width: 825px) {
