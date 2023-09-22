@@ -77,6 +77,7 @@ export default {
 
 #website-footer .text {
     flex: 1;
+    text-align: center;
 }
 
 #website-footer .stat-bar {
