@@ -63,7 +63,7 @@ export default {
     flex-direction: column;
     flex-grow: 1;
     box-sizing: border-box;
-    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
 }
 
 #website-footer {
@@ -96,7 +96,7 @@ export default {
 
 @media screen and (max-width: 825px) {
     #main-window {
-        max-height: calc(100vh - 4rem);
+        max-height: calc(100dvh - 4rem);
     }
 
     #website-footer {

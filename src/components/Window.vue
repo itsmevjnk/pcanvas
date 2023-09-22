@@ -125,7 +125,7 @@ export default {
     width: max-content;
     height: max-content;
     max-width: 80vw;
-    max-height: 80vh;
+    max-height: 80dvh;
     user-select: none;
 }
 </style>

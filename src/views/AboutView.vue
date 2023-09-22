@@ -77,6 +77,6 @@ footer, main {
 
 #gmaps {
     width: 100%;
-    height: 25vh;
+    height: 25dvh;
 }
 </style>
