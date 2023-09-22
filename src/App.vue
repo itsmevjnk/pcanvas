@@ -77,7 +77,7 @@ export default {
 
 #website-footer .text {
     flex: 1;
-    text-align: center;
+    text-align: start;
 }
 
 #website-footer .stat-bar {
@@ -105,6 +105,10 @@ export default {
         justify-content: center;
         align-items: center;
         min-height: 4rem;
+    }
+
+    #website-footer .text {
+        text-align: center;
     }
 }
 </style>
