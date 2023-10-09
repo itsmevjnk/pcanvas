@@ -1,29 +1,34 @@
-# pcanvas
+# pCanvas - A Public Drawing Canvas Platform
 
-This template should help get you started developing with Vue 3 in Vite.
+This is a public drawing canvas platform (i.e. [r/place](https://reddit.com/r/place) clone), originally written for the [SIT120 Introduction to Responsive Web Apps](https://www.deakin.edu.au/courses-search/unit-search.php?txtUnit=SIT120) unit.
 
-## Recommended IDE Setup
+This is only the frontend portion - also see https://github.com/itsmevjnk/pcanvas-backend for the backend.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Getting started
 
-## Customize configuration
+Clone this repository:
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+```
+git clone https://github.com/itsmevjnk/pcanvas.git
+```
 
-## Project Setup
+Then enter the repository's root directory and install dependencies:
 
-```sh
+```
+cd pcanvas
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Usage
 
-```sh
+To start a development server instance, which will be accessible locally on port 5173 (or another port if some other application is using it):
+
+```
 npm run dev
 ```
 
-### Compile and Minify for Production
+Static builds are currently broken for unknown reasons, so they are not available.
 
-```sh
-npm run build
-```
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
